@@ -20,7 +20,7 @@ getProbePackage(probepackage, lib = .libPaths()[1], verbose = TRUE)
   \item{verbose}{ Output informative comments? Defaults to \code{TRUE}}
 }
 
-}\value{
+\value{
   Nothing is returned. These functions are called simply to install environments.
 }
 \author{ James W. MacDonald, based on \code{getCDFinfo}, written by Jeff

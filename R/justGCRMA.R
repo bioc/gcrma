@@ -6,10 +6,7 @@ justGCRMA <- function(..., filenames=character(0),
                      sampleNames=NULL,
                      phenoData=NULL,
                      description=NULL,
-                     notes="",
-                     rm.mask=FALSE, rm.outliers=FALSE, rm.extra=FALSE,
-                     hdf5=FALSE, hdf5FilePath=NULL,
-                     normalize=TRUE, background=FALSE, 
+                     notes="", normalize=TRUE, 
                      bgversion=2, affinity.info=NULL,
                      type=c("fullmodel","affinities","mm","constant"),
                      k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
@@ -98,11 +95,8 @@ justGCRMA <- function(..., filenames=character(0),
                     rm.mask=rm.mask,
                     rm.outliers=rm.outliers,
                     rm.extra=rm.extra,
-                    #hdf5=hdf5, ## took these two out b/c I am not sure if hdf5 should be used
-                    #hdf5FilePath=hdf5FilePath,
                     verbose=verbose,
                     normalize=normalize,
-                    background=background,
                     bgversion=bgversion,
                     affinity.info=affinity.info,
                     type=type, k=k, stretch=stretch,
@@ -117,7 +111,6 @@ just.gcrma <- function(..., filenames=character(0),
                        description=NULL,
                        notes="", background=FALSE,
                        compress=getOption("BioC")$affy$compress.cel,
-                       rm.mask=FALSE, rm.outliers=FALSE, rm.extra=FALSE,
                        normalize=TRUE, bgversion=2, affinity.info=NULL,
                        type=c("fullmodel","affinities","mm","constant"),
                        k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
@@ -251,7 +244,7 @@ just.gcrma <- function(..., filenames=character(0),
   
   bg.dens <- function(x){density(x,kernel="epanechnikov",n=2^14)}
   
-  exprs <- .Call("rma_c_complete",pms,pms,probenames,ngenes,body(bg.dens),new.env(),normalize,background=background,bgversion)
+  exprs <- .Call("rma_c_complete",pms,pms,probenames,ngenes,body(bg.dens),new.env(),normalize,background=FALSE,bgversion)
 
   colnames(exprs) <- filenames
   se.exprs <- array(NA, dim(exprs))

@@ -30,7 +30,8 @@ compute.affinities <- function(cdfname,pmonly=FALSE,
   if(!pmonly){
     cat(".")
     for(i in 1:nrow(S))
-      if(S[i,13]==1 | S[i,38]==1) S[i,c(13,38)] <- (S[i,c(13,38)]+1)%%2 else S[i,63]=(S[i,63]+1)%%2
+      if(S[i,38]==1 | S[i,63]==1) S[i,c(38,63)]=1-S[i,c(38,63)] else S[i,13]=1-S[i,13]
+
     Xmm <- cbind(S[,1:25]%*%affinity.basis.matrix,S[,26:50]%*%affinity.basis.matrix,S[,51:75]%*%affinity.basis.matrix)
     amm <- Xmm%*%affinity.spline.coefs
   }
@@ -42,3 +43,16 @@ compute.affinities <- function(cdfname,pmonly=FALSE,
   
   return(list(pm=apm,mm=amm,index=Index))
 }
+
+check.probes <- function(probepackage, cdfname){
+  cdfnames <- names(pmindex(new("AffyBatch", cdfName=cdfname)))
+  ppnames <- as.character(probepackage$Probe.Set.Name)
+
+  if (sum(!(ppnames %in% cdfnames)) != 0){
+    Index <- ppnames %in% cdfnames
+    probepackage <- probepackage[Index,]
+  }
+  return(probepackage)
+}
+
+  

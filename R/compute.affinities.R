@@ -9,8 +9,8 @@ compute.affinities <- function(cdfname,verbose=TRUE){
   cdfpackagename <- paste(cleancdf,"cdf",sep="")
   probepackagename <- paste(cleancdf,"probe",sep="")
   
-  getCDF(cdfpackagename)
-  getProbePackage(probepackagename)
+  library(cdfpackagename,character.only=TRUE)
+  library(probepackagename,character.only=TRUE)
   p <- get(probepackagename)
   
   p <- check.probes(p, cdfname)

@@ -11,5 +11,4 @@ Maintainer: Z. Wu <zwu@jhsph.edu>
 License: LGPL
 Depends: R (>= 1.6), affy (>= 1.0), matchprobes
 Suggests: affydata
-ReleaseLevel: devel
 

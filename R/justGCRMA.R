@@ -13,21 +13,84 @@ justGCRMA <- function(..., filenames=character(0),
                      correction=1, rho=0.7, optical.correct=TRUE,
                      verbose=TRUE, fast=TRUE, minimum=1,
                      optimize.by = c("speed","memory")){
-
-  require(affy, quietly = TRUE)
-
-   l <- AllButCelsForReadAffy(..., filenames=filenames,
-                             widget=widget,
-                             celfile.path=celfile.path,
-                             sampleNames=sampleNames,
-                             phenoData=phenoData,
-                             description=description)
+  ##first figure out filenames
+  auxnames <- unlist(as.list(substitute(list(...)))[-1])
   
+  if (widget){
+    require(tkWidgets)
+    widgetfiles <- fileBrowser(textToShow="Choose CEL files",
+                               testFun=hasSuffix("[cC][eE][lL]"))
+  }
+  else
+    widgetfiles <- character(0)
+  
+  filenames <- .Primitive("c")(filenames, auxnames, widgetfiles)
+  
+  if(length(filenames)==0) filenames <- list.celfiles(celfile.path,full.names=TRUE)
+  
+  if(length(filenames)==0) stop("No cel filenames specified and no cel files in specified directory:",celfile.path,"\n")
+  
+  
+  ##now assign sampleNames if phenoData not given
+  if(is.null(phenoData)){
+    if(is.null(sampleNames)){
+      if(widget){
+        require(tkWidgets)
+        tksn <- tkSampleNames(filenames=filenames)
+        sampleNames <- tksn[,1]
+        ##notice that a description of the files is ingored for now
+        ##soon to go into MIAME
+      }
+      else{
+        sampleNames <- sub("^/?([^/]*/)*", "", filenames, extended=TRUE)
+      }
+    }
+    else{
+      if(length(sampleNames)!=length(filenames)){
+        warning("sampleNames not same length as filenames. Using filenames as sampleNames instead\n")
+        sampleNames <- sub("^/?([^/]*/)*", "", filenames, extended=TRUE)
+      }
+    }
+  }
+  
+  ##now get phenoData
+  if(is.character(phenoData)) ##if character read file
+    phenoData <- read.phenoData(filename=phenoData)
+  else{
+    if(class(phenoData)!="phenoData"){
+      if(widget){
+        require(tkWidgets)
+        phenoData <- read.phenoData(sampleNames=sampleNames,widget=TRUE)
+      }
+      else
+        phenoData <- read.phenoData(sampleNames=sampleNames,widget=FALSE)
+    }
+  }
+  
+  ##get MIAME information
+  if(is.character(description)){
+    description <- read.MIAME(filename=description,widget=FALSE)
+  }
+  else{
+    if(class(description)!="MIAME"){
+      if(widget){
+        require(tkWidgets)
+        description <- read.MIAME(widget=TRUE)
+      }
+      else
+        description <- new("MIAME")
+    }
+  }
+  
+  ##MIAME stuff
+  description@preprocessing$filenames <- filenames
+  if(exists("tksn")) description@samples$description <- tksn[,2]
+  description@preprocessing$affyversion <- library(help=affy)$info[[2]][[2]][2]
 
   ##and now we are ready to read cel files
-  return(just.gcrma(filenames=l$filenames,
-                    phenoData=l$phenoData,
-                    description=l$description,
+  return(just.gcrma(filenames=filenames,
+                    phenoData=phenoData,
+                    description=description,
                     notes=notes,
                     compress=compress,
                     verbose=verbose,

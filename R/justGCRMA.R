@@ -11,7 +11,8 @@ justGCRMA <- function(..., filenames=character(0),
                      type=c("fullmodel","affinities","mm","constant"),
                      k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                      correction=1, rho=0.7, optical.correct=TRUE,
-                     verbose=TRUE, fast=TRUE, minimum=1){
+                     verbose=TRUE, fast=TRUE, minimum=1,
+                     optimize.by = c("speed","memory")){
   ##first figure out filenames
   auxnames <- unlist(as.list(substitute(list(...)))[-1])
   
@@ -99,20 +100,22 @@ justGCRMA <- function(..., filenames=character(0),
                     type=type, k=k, stretch=stretch,
                     correction=correction, rho=rho,
                     optical.correct=optical.correct,
-                    fast=fast, minimum=minimum))
+                    fast=fast, minimum=minimum,
+                    optimize.by=optimize.by))
+
 }
 
 
 just.gcrma <- function(..., filenames=character(0),
                        phenoData=new("phenoData"),
                        description=NULL,
-                       notes="", background=FALSE,
-                       compress=getOption("BioC")$affy$compress.cel,
+                       notes="", compress=getOption("BioC")$affy$compress.cel,
                        normalize=TRUE, bgversion=2, affinity.info=NULL,
                        type=c("fullmodel","affinities","mm","constant"),
                        k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                        correction=1, rho=0.7, optical.correct=TRUE,
-                       verbose=TRUE, fast=TRUE, minimum=1) {
+                       verbose=TRUE, fast=TRUE, minimum=1,
+                       optimize.by = c("speed","memory")) {
 
   require(affy, quietly=TRUE)
 
@@ -171,6 +174,53 @@ just.gcrma <- function(..., filenames=character(0),
     
   }
 
+  speed <- match.arg(optimize.by)
+  if(speed == "speed"){
+    pms <- fast.bkg(filenames = filenames, pm.affinities = pm.affinities,
+                    mm.affinities = mm.affinities, index.affinities = index.affinities,
+                    type = type, minimum = minimum, optical.correct = optical.correct,
+                    verbose = verbose, k = k, rho = rho, correction = correction,
+                    stretch = stretch, fast = fast)
+  }
+  if(speed == "memory"){
+    pms <- mem.bkg(filenames = filenames, pm.affinities = pm.affinities,
+                    mm.affinities = mm.affinities, index.affinities = index.affinities,
+                    type = type, minimum = minimum, optical.correct = optical.correct,
+                    verbose = verbose, k = k, rho = rho, correction = correction,
+                   stretch = stretch, fast = fast)
+  }
+
+ 
+  tmp <- new("AffyBatch",
+             cdfName=cdfName,
+             annotation=cleancdfname(cdfName, addcdf=FALSE))
+  pmIndex <- pmindex(tmp)
+  probenames <- rep(names(pmIndex), unlist(lapply(pmIndex,length)))
+  pmIndex <- unlist(pmIndex)
+
+  ngenes <- length(geneNames(tmp))
+  
+  ##background correction - not used, but need to pass to .Call
+  
+  bg.dens <- function(x){density(x,kernel="epanechnikov",n=2^14)}
+  
+  exprs <- .Call("rma_c_complete",pms,pms,probenames,ngenes,body(bg.dens),new.env(),normalize,background=FALSE,bgversion)
+
+  colnames(exprs) <- filenames
+  se.exprs <- array(NA, dim(exprs))
+  
+  annotation <- annotation(tmp)
+  
+  new("exprSet", exprs = exprs, se.exprs = se.exprs, phenoData = phenoData, 
+      annotation = annotation, description = description, notes = notes)
+}
+
+## A function to do background correction fast, but taking more RAM
+
+fast.bkg <- function(filenames, pm.affinities, mm.affinities,
+                     index.affinities, type, minimum, optical.correct,
+                     verbose, k, rho, correction, stretch, fast){
+  
   pms <- read.probematrix(filenames=filenames, which="pm")$pm
   mms <- read.probematrix(filenames=filenames, which="mm")$mm
 
@@ -225,32 +275,80 @@ just.gcrma <- function(..., filenames=character(0),
       pms[,i] <- exp(mu + stretch*(log(pms[,i])-mu))
     }
   }
+  if(verbose) cat("Done.\n")
+  return(pms)
+}
 
+## A function to do background correction using less RAM
+
+mem.bkg <- function(filenames, pm.affinities, mm.affinities,
+                     index.affinities, type, minimum, optical.correct,
+                     verbose, k, rho, correction, stretch, fast){
+  
+  pms <- read.probematrix(filenames=filenames, which="pm")$pm
+
+  ## tmps used to carry optical correct value to bkg correction loop
+   if(optical.correct){
+     if(verbose) cat("Adjusting for optical effect.")
+     tmps <- NULL
+     for (i in 1:ncol(pms)){
+       if(verbose) cat(".")
+       mm <- read.probematrix(filenames=filenames[i], which="mm")$mm[,1]
+       tmp <-  min(c(pms[,i], mm), na.rm=TRUE)
+       pms[,i] <- pms[,i]- tmp + minimum
+       tmps <- c(tmps, tmp)
+    }
+   }
   if(verbose) cat("Done.\n")
 
- 
-  tmp <- new("AffyBatch",
-             cdfName=cdfName,
-             annotation=cleancdfname(cdfName, addcdf=FALSE))
-  pmIndex <- pmindex(tmp)
-  probenames <- rep(names(pmIndex), unlist(lapply(pmIndex,length)))
-  pmIndex <- unlist(pmIndex)
+  
+  if(type=="fullmodel" | type=="affinities"){
+    set.seed(1)
+    Subset <- sample(1:length(pms[index.affinities,]),25000)
+    y <- log2(pms)[index.affinities,][Subset]
+    Subset <- (Subset-1)%%nrow(pms[index.affinities,])+1
+    x <- pm.affinities[Subset]
+    fit1 <- lm(y~x)
+  }
 
-  ngenes <- length(geneNames(tmp))
-  
-  ##background correction - not used, but need to pass to .Call
-  
-  bg.dens <- function(x){density(x,kernel="epanechnikov",n=2^14)}
-  
-  exprs <- .Call("rma_c_complete",pms,pms,probenames,ngenes,body(bg.dens),new.env(),normalize,background=FALSE,bgversion)
+  if(verbose) cat("Adjusting for non-specific binding")
+  for(i in 1:ncol(pms)){
+    if(verbose) cat(".")
 
-  colnames(exprs) <- filenames
-  se.exprs <- array(NA, dim(exprs))
-  
-  annotation <- annotation(tmp)
-  
-  new("exprSet", exprs = exprs, se.exprs = se.exprs, phenoData = phenoData, 
-      annotation = annotation, description = description, notes = notes)
+    mm <- read.probematrix(filenames=filenames[i], which="mm")$mm[,1]
+    
+    if(optical.correct)
+      mm <- mm - tmps[i] + minimum
+          
+    if(type=="fullmodel"){
+      pms[,i] <- bg.adjust.fullmodel(pms[,i],mm,
+                                     pm.affinities,mm.affinities,
+                                     index.affinities,k=k,
+                                     Q=correction*mean(pms[,i]<mm),
+                                     Qmm=correction*0.5,rho=rho,fast=fast)
+      pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
+                                    fit1$coef[2]*pm.affinities+mean(fit1$coef[2]*pm.affinities))
+    }
+    if(type=="affinities"){
+      pms[,i] <- bg.adjust.affinities(pms[,i],pm.affinities,
+                                      index.affinities, k=k,
+                                      Q=correction*mean(pms[,i]<mm),
+                                      fast=fast)
+      pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
+                                    fit1$coef[2]*pm.affinities + 
+                                    mean(fit1$coef[2]*pm.affinities))
+    }
+    if(type=="mm") pms[,i] <- bg.adjust.mm(pms[,i],correction*mm,k=k,fast=fast)
+    if(type=="constant"){
+      pms[,i] <- bg.adjust.constant(pms[,i],k=k,Q=correction*mean(pms[,i]<mm),fast=fast)
+    }
+    if(stretch!=1){
+      mu <- mean(log(pms[,i]))
+      pms[,i] <- exp(mu + stretch*(log(pms[,i])-mu))
+    }
+  }
+  if(verbose) cat("Done.\n")
+  return(pms)
 }
 
 

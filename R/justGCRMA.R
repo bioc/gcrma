@@ -95,19 +95,21 @@ just.gcrma <- function(..., filenames=character(0),
   pmonly <- (type=="affinities"|type=="constant")
   needaff <- (type=="fullmodel"|type=="affinities")
 
-  if( needaff & is.null(affinity.info)){
-    if(verbose) cat("Computing affinities.")
-    affinity.info <- compute.affinities(cdfName,verbose=verbose)
-    if(verbose) cat("Done.\n")
-    
+  if( needaff ){
+    if(is.null (affinity.info)){
+      if(verbose) cat("Computing affinities.")
+      affinity.info <- compute.affinities(cdfName,verbose=verbose)
+      if(verbose) cat("Done.\n")
+    }
+      
     pm.affinities <- pm(affinity.info)
     mm.affinities <- mm(affinity.info)
-
+    
     index.affinities <- which(!is.na(pm.affinities))
-
+    
     pm.affinities <- pm.affinities[index.affinities]
     mm.affinities <- mm.affinities[index.affinities]
-
+    
     ##Recover memory
     rm(affinity.info)
     gc()

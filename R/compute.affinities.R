@@ -13,6 +13,8 @@ compute.affinities <- function(cdfname,pmonly=FALSE,
   library(probepackagename,character.only=TRUE)
   p <- get(probepackagename)
   
+  p <- check.probes(p, cdfname) #missing line
+  
   prlen <- unique(nchar(p$sequence))
   stopifnot(length(prlen)==1)
   

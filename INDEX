@@ -1,0 +1,13 @@
+bg.adjust.gcrma         Background ajustment with sequence information
+                        (internal function)
+bg.correct.gcrma        Background Correction Using sequence
+                        information
+bg.parameters.gcrma     Estimating parameters for gcrma background
+                        correction
+gcrma                   Robust Multi-Array expression measure using
+                        sequence information
+gcrma.rlm               robust linear model for ProbeSet
+generateExprVal.method.rlm
+                        Compute a summary expression value from the
+                        probes intensities
+getGroupInfo            Group probes by G/C contents in sequence

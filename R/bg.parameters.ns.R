@@ -1,33 +1,21 @@
-left.sigma <- function(x,mu) sqrt(mean((x[x<mu]-mu)^2))
+bg.parameters.ns=function (x, affinities,affinities2=NULL)
+{   
+       set.seed(1989);sample1=sample(length(x),5000)
+       suppressWarnings(lo1<-loess(log(x)~affinities,
+                        subset=sample1,degree=1,family="symmetric",span=.2))
+       bg.mu=predict(lo1,affinities)
+       bg.mu[affinities>max(affinities[sample1])]=max(lo1$fitted)
+       bg.mu[affinities<min(affinities[sample1])]=min(lo1$fitted)
+       if (is.null(affinities2)) bg.mu2=NULL
+       else {bg.mu2=predict(lo1,affinities2)
+             bg.mu2[affinities2>max(affinities[sample1])]=max(lo1$fitted)
+             bg.mu2[affinities2<min(affinities[sample1])]=min(lo1$fitted)
+           }
+       res=lo1$res[lo1$res<0];res=c(res,-res)
+       bg.sigma=mad(res)
 
+       return(list(bg.mu=bg.mu,bg.mu2=bg.mu2,bg.sigma=bg.sigma))
 
-bg.parameters.ns <- function(x,affinities,order.aff=NULL,Q=.25,nbreaks=40,
-                             monotonize.mu=TRUE,
-                             monotonize.sigma=FALSE){
-  ##ns stands for nonspecific
-  n <- round(length(x)/nbreaks)
-  if(is.null(order.aff)) order.aff=order(affinities)
-  ##break up the scatter plot and get "mean" and "sigma"
-  qs <- sapply(0:(nbreaks-1),function(k) {
-    o1 <- k*n+1;
-    o2 <- min((k+1)*n,length(x))
-    y <- x[order.aff[o1:o2]]
-    y <- log(y)
-    mu <- quantile(y,Q)
-    sigma <- sqrt(mean((y[y<mu]-mu)^2))
-    c(affinities[order.aff[(o1+o2)/2]],mu,sigma)
-  })
-  if(monotonize.mu) qs[2,] <- -PAV(-qs[2,])$y
-  ##fill in the blanks with approx
-  bg.mu <- approx(qs[1,],qs[2,],xout=affinities,rule=2)$y 
-  
-  if(monotonize.sigma){
-    qs[3,] <- -PAV(-qs[3,])$y
-    bg.sigma <- approx(qs[1,],qs[3,],xout=affinities,rule=2)$y 
-  }
-  else
-    ##bg.sigma <- approx(qs[1,],qs[3,],xout=affinities,rule=2)$y 
-    bg.sigma <- rep(median(qs[3,]),length(affinities))
-  
-  return(list(bg.mu = bg.mu,bg.sigma=bg.sigma))
 }
+
+

@@ -17,7 +17,7 @@ bg.adjust.gcrma <- function(Data,gcgroup,estimate=c("eb","mle"),rho=0.8,step=60,
     ##cat("background correction method:",estimate)
   if (estimate=="eb") {
     K0=max(0,round(mylog(lower.bound))+1)
-    for ( k in  which(c(lapply(gcgroup, length),recursive=T)>0)) {
+    for ( k in  which(c(lapply(gcgroup, length),recursive=TRUE)>0)) {
       a=pars.sg[k]
       tau=pars.bg[2,k]*sqrt(1-rho^2)
       mus=(1-rho)*pars.bg[1,k]+rho*log(mm[gcgroup[[k]]])
@@ -38,12 +38,13 @@ bg.adjust.gcrma <- function(Data,gcgroup,estimate=c("eb","mle"),rho=0.8,step=60,
       pm[gcgroup[[k]]]=tmp[1,];mm[gcgroup[[k]]]=tmp[2,]-tmp[1,]^2
     }
     if (triple.goal)
-      pm=mean(pm,na.rm=T)+sqrt(1+mean(mm,na.rm=T)/var(pm,na.rm=T))*(pm-mean(pm,na.rm=T))
+
+pm=mean(pm,na.rm=TRUE)+sqrt(1+mean(mm,na.rm=TRUE)/var(pm,na.rm=TRUE))*(pm-mean(pm,na.rm=TRUE))
     pm=exp(pm)
   }
 
   if (estimate=="mle") { 
-    for ( k in seq(along=gcgroup)) {
+    for ( k in which(c(lapply(gcgroup, length),recursive=TRUE)>0)) {
       pm[gcgroup[[k]]]=pm[gcgroup[[k]]]-exp(log(mm[gcgroup[[k]]])*rho+pars.bg[1,k]*(1-rho)-(1-rho^2)*pars.bg[2,k]^2)
     }
     pm[pm<baseline]=baseline
@@ -162,26 +163,38 @@ gcrma.rlm<-function(x,maxit=50,k=.5)#x is #of probes by # of arrays
 
 #bgcorrect.methods <- c(bgcorrect.methods,"gcrma")
 #express.summary.stat.methods <- c(express.summary.stat.methods,"rlm")
-
-getGroupInfo <- function(object){
+getGroupInfo<- function(object){
   allprobes<-probeNames(object)
+  pms=pm(object)
+  CDF=getCdfInfo(object)
+  loc.pm=rep(0,length(allprobes));i=1
+  for( x in unique(allprobes)) {
+    tmp=get(x,CDF)[,1]
+    loc.pm[i:(i+length(tmp)-1)]=tmp
+    i=i+length(tmp)} #faster than multiget
+
   matchaffyName=paste(cleancdfname(object@cdfName,addcdf=FALSE),"probe",sep="")
  if (identical(.find.package(matchaffyName, quiet=TRUE),character(0)))
      stop(paste("Probe sequence information not available. Please download and install the",matchaffyName,"library from:\n http://www.bioconductor.org/data/metaData.html\n See the vignette of matchprobes and gcrma for more details"))
-
- require(matchaffyName,character.only = TRUE)
+  require(matchaffyName,character.only = TRUE)
   seqData <- get(matchaffyName)
-  mm.seq<- complementSeq(seqData$seq,start=13,stop=13)
+  seq.pm=rep(NA,length(seqData$x))
+  loc.seq=xy2i(seqData$x,seqData$y)
+##check seqData
+  Index2=which(loc.pm%in%loc.seq) #probes with seq
+  seq.pm[order(loc.pm[Index2])]=seqData$seq[order(loc.seq)]
+  mm.seq<- complementSeq(seq.pm,start=13,stop=13)
   ATCGmm=basecontent(mm.seq)
   CGadj=ATCGmm[,3:4]
   CGadj[CGadj<=4]=4
   CGadj[CGadj>=8]=8
-  Index2=which(allprobes%in%seqData$Probe.Set.Name) #probes with seq 
-  group2d=as.list(NULL)
+    group2d=as.list(NULL)
   for (C in 4:8) {
     for(G in 4:8) {group2d=c(group2d,list(Index2[which(CGadj[,1]==C & CGadj[,2]==G)]))}}
-  c(group2d,list(which(!allprobes%in%seqData$Probe.Set.Name)))
+  c(group2d,list((1:length(allprobes))[-Index2]))
 }
+
+
 gcrma <- function (object,estimate="eb",summary.method = "medianpolish",normalize = TRUE,normalize.method = "quantiles", triple.goal=TRUE,rho=.8,step=60,lower.bound=1,baseline=.25,...) {
   old.bgcorrect.methods <- bgcorrect.methods
   on.exit(assign("bgcorrect.methods",old.bgcorrect.methods,env=.GlobalEnv))

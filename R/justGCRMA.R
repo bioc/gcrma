@@ -131,7 +131,7 @@ just.gcrma <- function(..., filenames=character(0),
   pdata <- pData(phenoData)
   ##try to read sample names from phenoData. if not there use CEL filenames
   if(dim(pdata)[1]!=n){#if empty pdata filename are samplenames
-    warning("Incompatible phenoData object. Created a new one.\n")
+    #warning("Incompatible phenoData object. Created a new one.\n")
     
     samplenames <- gsub("^/?([^/]*/)*", "", unlist(filenames), extended=TRUE	)
     pdata <- data.frame(sample=1:n,row.names=samplenames)

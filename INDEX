@@ -5,5 +5,7 @@ bg.adjust.affinities    Background adjustment with sequence
 bg.parameters.ns        Estimation of non-specific Binding Background
                         Parameters
 compute.affinities      Probe Affinity computation
+fast.bkg                Internal functions for justGCRMA
 gcrma                   Robust Multi-Array expression measure using
                         sequence information
+justGCRMA               Compute GCRMA Directly from CEL Files

@@ -48,7 +48,7 @@ gcrma(object,affinity.info=NULL,
 }
 \author{Rafeal Irizarry}
 \examples{
-if(require(affydata)){
+if(require(affydata) & require(hgu95av2probe)){
      data(Dilution)
      ai <- compute.affinities(cdfName(Dilution))
      Dil.expr<-gcrma(Dilution,affinity.info=ai,type="affinities")

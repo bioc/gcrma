@@ -149,7 +149,7 @@ just.gcrma <- function(..., filenames=character(0),
 
   ## get information from cdf environment
 
-  headdetails <- .Call("ReadHeader", filenames[[1]], compress)
+  headdetails <- .Call("ReadHeader", filenames[[1]], compress,PACKAGE="affy")
   dim.intensity <- headdetails[[2]]
   cdfName <- headdetails[[1]]
  
@@ -207,7 +207,7 @@ just.gcrma <- function(..., filenames=character(0),
   
   bg.dens <- function(x){density(x,kernel="epanechnikov",n=2^14)}
   
-  exprs <- .Call("rma_c_complete",pms,pms,probenames,ngenes,body(bg.dens),new.env(),normalize,background=FALSE,bgversion)
+  exprs <- .Call("rma_c_complete",pms,pms,probenames,ngenes,body(bg.dens),new.env(),normalize,background=FALSE,bgversion,PACKAGE="affy")
 
   colnames(exprs) <- filenames
   se.exprs <- array(NA, dim(exprs))

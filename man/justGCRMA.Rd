@@ -74,7 +74,8 @@ justGCRMA <- function(..., filenames=character(0),
   The tuning factor \code{k} will have different meanings if one uses
   the fast (add-hoc) algorithm or the empirical bayes approach. See Wu
   et al. (2003)
-     
+
+  \code{fast.bkg} and \code{mem.bkg} are two internal functions.
 }
 \value{
  An \code{exprSet}.

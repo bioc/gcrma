@@ -29,7 +29,8 @@ compute.affinities <- function(cdfname,verbose=TRUE){
   amm <- vector("numeric",length(p$sequence))
   
   for(i in seq(along=apm)) {
-    charMtrx <- .Call("gcrma_getSeq", p$sequence[i])
+    charMtrx <- .Call("gcrma_getSeq", p$sequence[i],
+                      PACKAGE="gcrma")
     A <- cbind(charMtrx[1,] %*% affinity.basis.matrix,
                charMtrx[2,] %*% affinity.basis.matrix,
                charMtrx[3,] %*% affinity.basis.matrix)

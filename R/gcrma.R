@@ -23,12 +23,12 @@ bg.adjust.gcrma <- function(Data,gcgroup,estimate=c("eb","mle"),rho=0.8,step=60,
       mus=(1-rho)*pars.bg[1,k]+rho*log(mm[gcgroup[[k]]])
       Ks=floor(mylog(pm[gcgroup[[k]]]))
       posty <- function(xxx){
-        p=xxx[1];mu=xxx[2];K=xxx[3]	
+        p=xxx[1];mu=xxx[2];K=xxx[3]
         pnorms=pnorm(log(p-base^(K0:K)),mu,tau)
         diff.pnorms=pnorms[-length(pnorms)]-pnorms[-1]
         g=(base^a+1)/base^(a*(K0:(K-1)+1))/2*diff.pnorms
         g0=(1/lower.bound^a+1/base^(a*K0))/2*(pnorm(log(p-lower.bound),mu,tau)-pnorm(log(p-base^K0),mu,tau))
-        gn=(base^a+1)/base^(a*(K+1))*pnorm(log(p-base^K),mu,tau) 
+        gn=(base^a+1)/base^(a*(K+1))*pnorm(log(p-base^K),mu,tau)
         f=g*log(base^(K0:(K-1))*(base+1)/2);f2=g*log(base^(K0:(K-1))*(base+1)/2)^2
         f0=g0*log(lower.bound/2+base^K0/2);f02=g0*log(lower.bound/2+base^K0/2)^2
         fn=gn*log(base^K/2+p/2);fn2=gn*log(base^K/2+p/2)^2
@@ -43,7 +43,7 @@ pm=mean(pm,na.rm=TRUE)+sqrt(1+mean(mm,na.rm=TRUE)/var(pm,na.rm=TRUE))*(pm-mean(p
     pm=exp(pm)
   }
 
-  if (estimate=="mle") { 
+  if (estimate=="mle") {
     for ( k in which(c(lapply(gcgroup, length),recursive=TRUE)>0)) {
       pm[gcgroup[[k]]]=pm[gcgroup[[k]]]-exp(log(mm[gcgroup[[k]]])*rho+pars.bg[1,k]*(1-rho)-(1-rho^2)*pars.bg[2,k]^2)
     }
@@ -58,7 +58,7 @@ pm=mean(pm,na.rm=TRUE)+sqrt(1+mean(mm,na.rm=TRUE)/var(pm,na.rm=TRUE))*(pm-mean(p
 bg.parameters.gcrma<-function(mm,gcgroup,n.pts=2^10,adjust=1){
    max.density <- function(x,n.pts,bw.c) {
    bw=bw.nrd0(x)*adjust
-    aux <- density(x, kernel = "epanechnikov", n = n.pts,bw=bw, 
+    aux <- density(x, kernel = "epanechnikov", n = n.pts,bw=bw,
             na.rm = TRUE)
         median(aux$x[aux$y>max(aux$y)*.95])
     }
@@ -69,10 +69,10 @@ bg.parameters.gcrma<-function(mm,gcgroup,n.pts=2^10,adjust=1){
     bg.sd <- sqrt(sum((bg.data-bg.mu)^2)/(length(bg.data) - 1)) * sqrt(2)
         c(bg.mu,bg.sd)})
   ##last group is probe-without-seq-info
-  cbind(pars.bg,apply(pars.bg,1,mean))
+  cbind(pars.bg,rowMeans(pars.bg))
 }
 ############################################################
-        
+
 sg.parameters.gcrma <- function(pm,pars.bg,gcgroup){
    pars.sg <- sapply(1:25,function(k){
      x=log(round(pm[gcgroup[[k]]],-1))
@@ -154,7 +154,7 @@ generateExprVal.method.rlm <- function(probes,...){
 
 gcrma.rlm<-function(x,maxit=50,k=.5)#x is #of probes by # of arrays
   { X.model=data.frame(X1=gl(ncol(x),nrow(x)),X2=gl(nrow(x),1,length(x)))
-    X.model=model.matrix(~X1+X2,X.model,contrasts = list(X2="contr.sum"))[,-1]  
+    X.model=model.matrix(~X1+X2,X.model,contrasts = list(X2="contr.sum"))[,-1]
     rlm0=summary(rlm(as.vector(log2(x))~X.model,maxit=maxit,k=k))
     exprs=c(rlm0$coef[1,1],rlm0$coef[2:ncol(x),1]+rlm0$coef[1,1])
     se.exprs=sqrt(sum(rlm0$cov.unscaled[1:2,1:2]))*rlm0$stddev
@@ -202,7 +202,7 @@ gcrma <- function (object,estimate="eb",summary.method = "medianpolish",normaliz
   old.express.summary.stat.methods <- express.summary.stat.methods
   on.exit(assign("express.summary.stat.methods",old.express.summary.stat.methods,env=.GlobalEnv))
   assign("express.summary.stat.methods",c(express.summary.stat.methods,"rlm"), env=.GlobalEnv)
-  
+
   gcgroup <- getGroupInfo(object)
   res <- expresso(object,bgcorrect.method = "gcrma",bgcorrect.param =list(gcgroup,estimate,rho,step,lower.bound,baseline,triple.goal),pmcorrect.method = "pmonly",normalize=normalize,normalize.method =normalize.method ,summary.method = summary.method,...)
   return(res)

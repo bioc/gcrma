@@ -70,9 +70,9 @@ gcrma.engine <- function(pms,mms,pm.affinities=NULL,mm.affinities=NULL,
                                     fit1$coef[2]*pm.affinities+mean(fit1$coef[2]*pm.affinities))
     }
     if(type=="affinities"){
-      pms[,i] <- bg.adjust.affinities(pms[,i],pm.affinities,
+      pms[,i] <- bg.adjust.affinities(pms[,i],mms[,i],
+                                      pm.affinities,mm.affinities,
                                       index.affinities, k=k,
-                                      Q=correction*mean(pms[,i]<mms[,i]),
                                       fast=fast)
       pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
                                     fit1$coef[2]*pm.affinities + 

@@ -21,4 +21,4 @@ gcrma.bg.transformation <- function(pms,mu,tau,k,lower.bound=.5,a=1,...){
   pm[is.na(pm)]=lower.bound #with extreme mm>>>pm it's possible to get NaN
   pm
 }
-
+#this file was missing from 1.1.1 release

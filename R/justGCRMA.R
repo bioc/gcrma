@@ -216,7 +216,7 @@ just.gcrma <- function(..., filenames=character(0),
                                     fit1$coef[2]*pm.affinities + 
                                     mean(fit1$coef[2]*pm.affinities))
     }
-    if(type=="mm") pms[,i] <- bg.adjust.mm(pms[,i],correction*mms,k=k,fast=fast)
+    if(type=="mm") pms[,i] <- bg.adjust.mm(pms[,i],correction*mms[,i],k=k,fast=fast)
     if(type=="constant"){
       pms[,i] <- bg.adjust.constant(pms[,i],k=k,Q=correction*mean(pms[,i]<mms[,i]),fast=fast)
     }

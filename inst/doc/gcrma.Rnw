@@ -25,7 +25,7 @@
 
 \author{Zhijin(Jean) Wu, Rafael Irizarry}
 \begin{document}
-\title{Textual description of gcrma}
+\title{description of gcrma}
 
 \maketitle
 \tableofcontents

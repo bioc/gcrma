@@ -1,10 +1,10 @@
-compute.affinities <- function(cdfname,pmonly=FALSE,
-                               verbose=TRUE){
+compute.affinities <- function(cdfname,verbose=TRUE){
+  
   require(splines,quietly = TRUE)
   require(matchprobes,quietly = TRUE)
   data(affinity.spline.coefs) ###needs to change to data(something)
   affinity.basis.matrix <- ns(1:25,df=length(affinity.spline.coefs)/3)
-
+  
   cleancdf <- cleancdfname(cdfname,addcdf=FALSE)
   cdfpackagename <- paste(cleancdf,"cdf",sep="")
   probepackagename <- paste(cleancdf,"probe",sep="")
@@ -13,43 +13,64 @@ compute.affinities <- function(cdfname,pmonly=FALSE,
   library(probepackagename,character.only=TRUE)
   p <- get(probepackagename)
   
-  p <- check.probes(p, cdfname) #missing line
+  p <- check.probes(p, cdfname)
   
   prlen <- unique(nchar(p$sequence))
   stopifnot(length(prlen)==1)
   
-  if(verbose) cat(".")
-  mat <- matrix(unlist(strsplit(p$sequence, "")), byrow=TRUE, ncol=prlen)
-  stopifnot(all(mat %in% c("A", "C", "G", "T")))
-  S <- cbind(mat=="A", mat=="C", mat=="G")
-
-  if(verbose) cat(".")
-  S <- array(as.numeric(S), dim=dim(S))
-  colnames(S) <- paste ("S", 1:(3*prlen), sep="")
-  Xpm <- cbind(S[,1:25]%*%affinity.basis.matrix,S[,26:50]%*%affinity.basis.matrix,S[,51:75]%*%affinity.basis.matrix)
-  apm <- Xpm%*%affinity.spline.coefs
+  A13 <- sum(affinity.basis.matrix[13,]*affinity.spline.coefs[1:5])
+  T13 <- 0
+  C13 <- sum(affinity.basis.matrix[13,]*affinity.spline.coefs[6:10])
+  G13 <- sum(affinity.basis.matrix[13,]*affinity.spline.coefs[11:15])
   
-  if(!pmonly){
-    cat(".")
-    for(i in 1:nrow(S))
-      if(S[i,38]==1 | S[i,63]==1) S[i,c(38,63)]=1-S[i,c(38,63)] else S[i,13]=1-S[i,13]
-
-    Xmm <- cbind(S[,1:25]%*%affinity.basis.matrix,S[,26:50]%*%affinity.basis.matrix,S[,51:75]%*%affinity.basis.matrix)
-    amm <- Xmm%*%affinity.spline.coefs
+  if(verbose) cat(".")
+  
+  apm <- vector("numeric",length(p$sequence))
+  amm <- vector("numeric",length(p$sequence))
+  
+  for(i in seq(along=apm)) {
+    charMtrx <- .Call("gcrma_getSeq", p$sequence[i])
+    A <- cbind(charMtrx[1,] %*% affinity.basis.matrix,
+               charMtrx[2,] %*% affinity.basis.matrix,
+               charMtrx[3,] %*% affinity.basis.matrix)
+    
+    apm[i] <- A %*% affinity.spline.coefs
+    
+    if (charMtrx[1,13] == 1) {
+      amm[i] <- apm[i] + T13 - A13
+    }
+    else {
+      if (charMtrx[4,13] == 1) {
+        amm[i] <- apm[i] + A13 - T13
+      }
+      else{
+        if (charMtrx[3,13]) {
+          amm[i] <- apm[i] + C13 - G13
+        }
+        else {
+          amm[i] <- apm[i] + G13 - C13
+        }
+      }
+    }
   }
-  else amm <- NULL
   
+  ##put it in an affybatch
   tmp <- get("xy2i",paste("package:",cdfpackagename,sep=""))
-  pmIndex <-  unlist(indexProbes(new("AffyBatch",cdfName=cdfname),"pm"))
-  Index <- match(tmp(p$x,p$y),pmIndex)
-  
-  return(list(pm=apm,mm=amm,index=Index))
+  affinity.info <- new("AffyBatch",cdfName=cdfname)
+  pmIndex <-  unlist(indexProbes(affinity.info,"pm"))
+  mmIndex <-  unlist(indexProbes(affinity.info,"mm"))
+  subIndex <- match(tmp(p$x,p$y),pmIndex)
+  tmp.exprs=matrix(NA,nrow=max(cbind(pmIndex,mmIndex)),ncol=1)
+  tmp.exprs[pmIndex[subIndex]]=apm
+  if(!is.null(amm)){ tmp.exprs[mmIndex[subIndex]]=amm }
+  exprs(affinity.info)=tmp.exprs
+  return(affinity.info)
 }
 
 check.probes <- function(probepackage, cdfname){
   cdfnames <- names(pmindex(new("AffyBatch", cdfName=cdfname)))
   ppnames <- as.character(probepackage$Probe.Set.Name)
-
+  
   if (sum(!(ppnames %in% cdfnames)) != 0){
     Index <- ppnames %in% cdfnames
     probepackage <- probepackage[Index,]
@@ -57,4 +78,4 @@ check.probes <- function(probepackage, cdfname){
   return(probepackage)
 }
 
-  
+

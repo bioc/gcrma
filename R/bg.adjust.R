@@ -36,42 +36,41 @@ bg.adjust.constant <- function(x,k=6*fast+0.25*(1-fast),Q=0.25,fast=TRUE){
   else return(gcrma.bg.transformation(x,mu,sigma,k=k))
 }
 
-bg.adjust.affinities <- function(x,affinities,index=seq(along=x),
-                                 k=6*fast+0.25*(1-fast),Q=0.25,fast=TRUE){
-  parameters <- bg.parameters.ns(x[index],affinities)
-  mu <- vector("numeric",length(x))
-  sigma <- vector("numeric",length(x))
-  mu[index] <- parameters$bg.mu
-  sigma[index] <- parameters$bg.sigma
+bg.adjust.affinities <- function(pms,mms,pm.affinities,mm.affinities,
+                                 index.affinities=seq(along=pms),
+                                 k=6*fast+0.25*(1-fast),fast=TRUE){
+    parameters <- bg.parameters.ns(mms[index.affinities],mm.affinities,pm.affinities)
+  mu <- vector("numeric",length(pms))
+  sigma <- vector("numeric",length(pms))
+  mu[index.affinities] <- parameters$bg.mu2
+  sigma[index.affinities] <- parameters$bg.sigma
   
   ##fill in the pms for which we dont have affinities
-  if(length(index)<length(x)){
-    mu[-index] <- median(mu[index])
-    sigma[-index] <- median(sigma[index])
+  if(length(index.affinities)<length(pms)){
+    mu[-index.affinities] <- median(mu[index.affinities])
+    sigma[-index.affinities] <- median(sigma[index.affinities])
   }
   
   if(fast){
       bhat <- exp(mu + 1/2*sigma^2)
       var.y <- exp(2*mu+sigma^2)*(exp(sigma^2)-1)
-      return(gcrma.bg.transformation.fast(x,bhat,var.y,k=k))
+      return(gcrma.bg.transformation.fast(pms,bhat,var.y,k=k))
     }
-  else return(gcrma.bg.transformation(x,mu,sigma,k=k))
+  else return(gcrma.bg.transformation(pms,mu,sigma,k=k))
 }
 
 bg.adjust.fullmodel <- function(pms,mms,pm.affinities,mm.affinities,
                                 index.affinities,k=6*fast+0.25*(1-fast),
                                 Q=0.25,Qmm=0.5,rho=0.7,fast=TRUE){
   
-  parameters <- bg.parameters.ns(pms[index.affinities],pm.affinities,mm.affinities)
+  parameters <- bg.parameters.ns(mms[index.affinities],mm.affinities,pm.affinities)
   mu.pm <- vector("numeric",length(pms))
+  mu.mm <-  vector("numeric",length(pms))
   sigma <- vector("numeric",length(pms))
-  mu.pm[index.affinities] <- parameters$bg.mu
+  mu.pm[index.affinities] <- parameters$bg.mu2
+  mu.mm[index.affinities] <- parameters$bg.mu
   sigma[index.affinities] <- parameters$bg.sigma
 
-  parameters <- bg.parameters.ns(mms[index.affinities],mm.affinities,mm.affinities)
-  mu.mm <-  vector("numeric",length(pms))
-  mu.mm[index.affinities] <- parameters$bg.mu
-  
   ##fill in the pms for which we dont have affinities
   if(length(index.affinities)<length(pms)){
     mu.pm[-index.affinities] <- median(mu.pm[index.affinities])

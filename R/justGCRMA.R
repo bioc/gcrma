@@ -14,7 +14,7 @@ justGCRMA <- function(..., filenames=character(0),
                      verbose=TRUE, fast=TRUE, minimum=1,
                      optimize.by = c("speed","memory")){
 
-
+  require(affy, quietly = TRUE)
 
    l <- AllButCelsForReadAffy(..., filenames=filenames,
                              widget=widget,

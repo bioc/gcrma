@@ -17,7 +17,7 @@ bg.adjust.gcrma <- function(Data,gcgroup,estimate=c("eb","mle"),rho=0.8,step=60,
     ##cat("background correction method:",estimate)
   if (estimate=="eb") {
     K0=max(0,round(mylog(lower.bound))+1)
-    for ( k in seq(along=gcgroup)) {
+    for ( k in  which(c(lapply(gcgroup, length),recursive=T)>0)) {
       a=pars.sg[k]
       tau=pars.bg[2,k]*sqrt(1-rho^2)
       mus=(1-rho)*pars.bg[1,k]+rho*log(mm[gcgroup[[k]]])

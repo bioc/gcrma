@@ -54,36 +54,96 @@ bg.adjust.gcrma <- function(Data,gcgroup,estimate=c("eb","mle"),rho=0.8,step=60,
 
 
 ############################################################
-bg.parameters.gcrma <- function(mm,gcgroup,n.pts=2^10){
-  max.density <- function(x, n.pts) {
-        aux <- density(x, kernel = "epanechnikov", n = n.pts, 
+bg.parameters.gcrma<-function(mm,gcgroup,n.pts=2^10,adjust=1){
+   max.density <- function(x,n.pts,bw.c) {
+   bw=bw.nrd0(x)*adjust
+    aux <- density(x, kernel = "epanechnikov", n = n.pts,bw=bw, 
             na.rm = TRUE)
-        aux$x[order(-aux$y)[1]]
+        median(aux$x[aux$y>max(aux$y)*.95])
     }
   pars.bg <- sapply(1:25,function(k){
     x=mm[gcgroup[[k]]]
-    bg.mu <- max.density(x,n.pts)
+    bg.mu <- max.density(x,n.pts,bw.c)
     bg.data <- x[x < bg.mu]
     bg.sd <- sqrt(sum((bg.data-bg.mu)^2)/(length(bg.data) - 1)) * sqrt(2)
         c(bg.mu,bg.sd)})
   ##last group is probe-without-seq-info
   cbind(pars.bg,apply(pars.bg,1,mean))
 }
-
+############################################################
+        
 sg.parameters.gcrma <- function(pm,pars.bg,gcgroup){
    pars.sg <- sapply(1:25,function(k){
      x=log(round(pm[gcgroup[[k]]],-1))
      y=log(table(x))
      x=as.numeric(names(y))
-     if (sum(x>pars.bg[1,k]+3*pars.bg[2,k]&y>log(2))>40) 
-        return(-lm(y~x,subset=x>pars.bg[1,k]+3*pars.bg[2,k]&y>log(2))$coef[2])
-      else( return(3.5))
+     subset=x>quantile(x[x>pars.bg[1,k]],.05)&y>log(2)
+     if (sum(subset)>25)
+        return(-lm(y~x,subset=subset)$coef[2])
+      else( return(3))
    })
+   pars.sg=apply(matrix(pars.sg,5,5),2,function(x) PAV(x)$y)
    pars.sg <-c(pars.sg,mean(pars.sg))
-   pars.sg[pars.sg<1]=1
+   pars.sg[pars.sg<1]=1;pars.sg[pars.sg>3]=3
    pars.sg
  }
-        
+  average<-function(y, wt = rep(1, length(y)))
+{
+# compute a weighted average of a vector, y
+        if(any(is.na(wt))) stop("NA's not allowed for wt")
+        if(any(wt < 0))
+                stop("wt must be a vector of NON-NEGATIVE weights")
+        if(length(wt) != length(y)) stop(
+                "y and wt must be vectors of the same length")
+# if any observations have Infinite weight, return the simple
+# (unweighted) average of only those observations (giving no
+# weight to observations with finite weight)
+        if(any(wt == Inf)) {
+                wt[wt < Inf] <- 0
+                wt[wt == Inf] <- 1
+}
+# if all weights are zero, return the simple (unweighted)
+# average of y
+        if(sum(wt) == 0)
+                wt <- rep(1, length(wt))
+        return(sum((y * wt)/sum(wt)))
+}
+
+PAV <- function(y, wt = rep(1,length(y)))
+{
+# This is a modification of Derick's PAV program
+#
+# (Weighted) Pool-Adjacent-Violators (PAV) algorithm
+# for non-parametric monotonic (decreasing) regression of y on x
+        n <- length(y)
+        if(n != length(wt))
+                stop("y, and wt must be vectors of equal length")
+yhat <- y       # initialize while loop
+        j <- count <- 1
+        k <- 2
+        support <- vector("numeric", n)
+        support[count] <- j
+        while(k <= n) {
+                while(yhat[j] < yhat[k]) {
+                        yhat[j:k] <- average(y[j:k], wt[j:k])
+                        if(yhat[support[count]] < yhat[k]) {
+                                j <- support[count]
+                                if(count > 1)
+                                        count <- count - 1
+                        }
+                        else {
+                                k <- ifelse(k == n, k, k + 1)
+                        }
+                }
+
+ count <- count + 1
+                support[count] <- j
+                j <- k
+                k <- k + 1
+        }
+        return(y = yhat, wt)
+}
+
 
 ##########################################################################################
 ##########################################################################################
@@ -106,7 +166,10 @@ gcrma.rlm<-function(x,maxit=50,k=.5)#x is #of probes by # of arrays
 getGroupInfo <- function(object){
   allprobes<-probeNames(object)
   matchaffyName=paste(cleancdfname(object@cdfName,addcdf=FALSE),"probe",sep="")
-  require(matchaffyName,character.only = TRUE)
+ if (identical(.find.package(matchaffyName, quiet=TRUE),character(0)))
+     stop(paste("Probe sequence information not available. Please download and install the",matchaffyName,"library from:\n http://www.bioconductor.org/data/metaData.html\n See the vignette of matchprobes and gcrma for more details"))
+
+ require(matchaffyName,character.only = TRUE)
   seqData <- get(matchaffyName)
   mm.seq<- complementSeq(seqData$seq,start=13,stop=13)
   ATCGmm=basecontent(mm.seq)
@@ -120,7 +183,7 @@ getGroupInfo <- function(object){
   c(group2d,list(which(!allprobes%in%seqData$Probe.Set.Name)))
 }
 
-gcrma <- function (object,estimate="eb",summary.method = "rlm",normalize = TRUE,normalize.method = "quantiles", rho=.8,step=60,lower.bound=1,baseline=.25,...) {
+gcrma <- function (object,estimate="eb",summary.method = "medianpolish",normalize = TRUE,normalize.method = "quantiles", rho=.8,step=60,lower.bound=1,baseline=.25,...) {
   old.bgcorrect.methods <- bgcorrect.methods
   on.exit(assign("bgcorrect.methods",old.bgcorrect.methods,env=.GlobalEnv))
   assign("bgcorrect.methods",c(bgcorrect.methods,"gcrma"), env=.GlobalEnv)

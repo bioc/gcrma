@@ -1,6 +1,7 @@
 Package: gcrma
 Title: Background Adjustment Using Sequence Information
-Version: 0.1.0
+Version: 0.2.0
+Date: 2003-07-16
 Author: Jean(ZHIJIN) Wu
 Description:  background adjustment using sequence information
 Maintainer: Z. Wu <zwu@jhsph.edu>

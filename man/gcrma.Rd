@@ -12,8 +12,7 @@ gcrma(object,estimate="eb",summary.method = "rlm",summary.subset=geneNames(objec
    \item{object}{an \code{\link[affy:AffyBatch-class]{AffyBatch}}}
   \item{estimate}{"eb" or "mle". An character indicating background correction method.
 "eb" for empirical Bayes, "mle" for maximum likelihood} 
-  \item{summary.subset}{An vector of gene names with the the probe sets do to be
-    converted to expression. }
+  \item{summary.method}{"medianpolish" or "rlm". Method to extract the expression value of a probeset from  background adjusted intensities. }
  \item{normalize}{logical value. If \code{TRUE} normalize data using
     normalize.method (default as quantile normalization)}
   \item{rho}{correlation coefficient of log background intensity in a pair of pm/mm probes. Default=.8}

@@ -2,7 +2,7 @@
 %\VignetteIndexEntry{affy primer}
 %\VignetteKeywords{Preprocessing, Affymetrix}
 %\VignetteDepends{affy}
-%\VignettePackage{affy}
+%\VignettePackage{gcrma}
 %documentclass[12pt, a4paper]{article}
 \documentclass[12pt]{article}
 

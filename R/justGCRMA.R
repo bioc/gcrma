@@ -168,6 +168,9 @@ just.gcrma <- function(..., filenames=character(0),
 
     index.affinities <- which(!is.na(pm.affinities))
 
+    pm.affinities <- pm.affinities[index.affinities]
+    mm.affinities <- mm.affinities[index.affinities]
+
     ##Recover memory
     rm(affinity.info)
     gc()

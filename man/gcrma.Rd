@@ -49,9 +49,10 @@ gcrma(object,affinity.info=NULL,
 }
 \author{Rafeal Irizarry}
 \examples{
-require(affydata)
-data(Dilution)
-Dil.expr<-gcrma(Dilution,affinity.info=NULL,type="affinities")
+if(require(affydata)){
+     data(Dilution)
+     Dil.expr<-gcrma(Dilution,affinity.info=NULL,type="affinities")
+}
 }
 \keyword{manip}
 

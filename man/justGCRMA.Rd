@@ -10,13 +10,12 @@
 just.gcrma <- function(..., filenames=character(0),
                        phenoData=new("phenoData"),
                        description=NULL,
-                       notes="", background=FALSE,
-                       compress=getOption("BioC")$affy$compress.cel,
+                       notes="", compress=getOption("BioC")$affy$compress.cel,
                        normalize=TRUE, bgversion=2, affinity.info=NULL,
                        type=c("fullmodel","affinities","mm","constant"),
                        k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                        correction=1, rho=0.7, optical.correct=TRUE,
-                       verbose=TRUE, fast=TRUE, minimum=1)
+                       verbose=TRUE, fast=TRUE, minimum=1, optimize.by=c("speed","memory"))
 
 justGCRMA <- function(..., filenames=character(0),
                      widget=getOption("BioC")$affy$use.widgets,
@@ -31,7 +30,7 @@ justGCRMA <- function(..., filenames=character(0),
                      type=c("fullmodel","affinities","mm","constant"),
                      k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                      correction=1, rho=0.7, optical.correct=TRUE,
-                     verbose=TRUE, fast=TRUE, minimum=1)
+                     verbose=TRUE, fast=TRUE, minimum=1, optimize.by=c("speed","memory"))
 }
 \arguments{
   \item{\dots}{ file names separated by comma.}
@@ -60,6 +59,8 @@ justGCRMA <- function(..., filenames=character(0),
     the function is printed.} 
   \item{fast}{Logicalvalue. If \code{TRUE} a faster add-hoc algorithm is
     used.}
+  \item{optimize.by}{"speed" will use a faster algorithm but more RAM, and "memory"
+    will be slower, but require less RAM.}
 }
 \details{
   This method should require much less RAM than the conventional

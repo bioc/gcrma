@@ -92,9 +92,6 @@ justGCRMA <- function(..., filenames=character(0),
                     description=description,
                     notes=notes,
                     compress=compress,
-                    rm.mask=rm.mask,
-                    rm.outliers=rm.outliers,
-                    rm.extra=rm.extra,
                     verbose=verbose,
                     normalize=normalize,
                     bgversion=bgversion,
@@ -159,7 +156,7 @@ just.gcrma <- function(..., filenames=character(0),
   needaff <- (type=="fullmodel"|type=="affinities")
 
   if( needaff & is.null(affinity.info)){
-    if(verbose) cat("Computing affinities.\n")
+    if(verbose) cat("Computing affinities.")
     affinity.info <- compute.affinities(cdfName,verbose=verbose)
     if(verbose) cat("Done.\n")
     
@@ -178,13 +175,14 @@ just.gcrma <- function(..., filenames=character(0),
   mms <- read.probematrix(filenames=filenames, which="mm")$mm
 
   if(optical.correct){
-     if(verbose) cat("Adjusting for optical effect.\n")
+     if(verbose) cat("Adjusting for optical effect.")
      for (i in 1:ncol(pms)){
        if(verbose) cat(".")
        tmp <- min(c(pms[,i], mms[,i]), na.rm=TRUE)
        pms[,i] <- pms[,i]- tmp + minimum
        mms[,i] <- mms[,i]- tmp + minimum
     }
+     if(verbose) cat("Done.\n")
   }
   if(type=="fullmodel" | type=="affinities"){
     set.seed(1)

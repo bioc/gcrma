@@ -16,6 +16,8 @@ gcrma(object,estimate="eb",summary.method = "rlm",summary.subset=geneNames(objec
  \item{normalize}{logical value. If \code{TRUE} normalize data using
     normalize.method (default as quantile normalization)}
   \item{rho}{correlation coefficient of log background intensity in a pair of pm/mm probes. Default=.8}
+  \item{triple.goal} {logical value. If \code{TRUE} Shen and Louis'
+ triple-goal adjustment is used.}
   \item{baseline}{For estimate="mle" only. The lowest log(expression) value allowed. Default=.25}
   \item{lower.bound}{For estimate="eb" only. Lower bound of signal intensity allowed a priori. Default=1.}
   \item{step}{a parameter in approximating "eb" estimates.}
@@ -29,6 +31,9 @@ gcrma(object,estimate="eb",summary.method = "rlm",summary.subset=geneNames(objec
  An `exprSet'
 }
 \author{Jean Wu, Rafeal Irizarry}
+\references{Wei Shen and Thomas Louis.  Triple-goal estimates in
+  two-stage hierarchical models. J.R.Statist.Soc.B(1998)}
+   
 
 
 \examples{

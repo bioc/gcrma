@@ -7,8 +7,7 @@ bg.correct.gcrma <- function(object,...)
   pm(object) <- apply(array(c(pms,mms),dim=c(dim(pms),2)),2,bg.adjust.gcrma,...)
   return(object)
   }
-
-bg.adjust.gcrma <- function(Data,gcgroup,estimate=c("eb","mle"),rho=0.8,step=60,lower.bound=1,baseline=.25,...){
+bg.adjust.gcrma <- function(Data,gcgroup,estimate=c("eb","mle"),rho=0.8,step=60,lower.bound=1,baseline=.25,triple.goal,...){
   estimate=match.arg(estimate)
   pm=Data[,1];mm=Data[,2]
   pars.bg <-bg.parameters.gcrma(log(mm),gcgroup=gcgroup)
@@ -30,13 +29,16 @@ bg.adjust.gcrma <- function(Data,gcgroup,estimate=c("eb","mle"),rho=0.8,step=60,
         g=(base^a+1)/base^(a*(K0:(K-1)+1))/2*diff.pnorms
         g0=(1/lower.bound^a+1/base^(a*K0))/2*(pnorm(log(p-lower.bound),mu,tau)-pnorm(log(p-base^K0),mu,tau))
         gn=(base^a+1)/base^(a*(K+1))*pnorm(log(p-base^K),mu,tau) 
-        f=g*log(base^(K0:(K-1))*(base+1)/2)
-        f0=g0*log(lower.bound/2+base^K0/2)
-        fn=gn*log(base^K/2+p/2)
-        (sum(f)+f0+fn)/(sum(g)+g0+gn)
+        f=g*log(base^(K0:(K-1))*(base+1)/2);f2=g*log(base^(K0:(K-1))*(base+1)/2)^2
+        f0=g0*log(lower.bound/2+base^K0/2);f02=g0*log(lower.bound/2+base^K0/2)^2
+        fn=gn*log(base^K/2+p/2);fn2=gn*log(base^K/2+p/2)^2
+        c((sum(f)+f0+fn)/(sum(g)+g0+gn),(sum(f2)+f02+fn2)/(sum(g)+g0+gn))
       }
-      pm[gcgroup[[k]]]=apply(cbind(pm[gcgroup[[k]]],mus,Ks),1,posty)
+       tmp=apply(cbind(pm[gcgroup[[k]]],mus,Ks),1,posty)
+      pm[gcgroup[[k]]]=tmp[1,];mm[gcgroup[[k]]]=tmp[2,]-tmp[1,]^2
     }
+    if (triple.goal)
+      pm=mean(pm,na.rm=T)+sqrt(1+mean(mm,na.rm=T)/var(pm,na.rm=T))*(pm-mean(pm,na.rm=T))
     pm=exp(pm)
   }
 
@@ -49,8 +51,6 @@ bg.adjust.gcrma <- function(Data,gcgroup,estimate=c("eb","mle"),rho=0.8,step=60,
     pm[is.na(pm)]=lower.bound #with extreme mm>>>pm it's possible to get NaN
    pm
 }
-
-
 
 
 ############################################################
@@ -182,8 +182,7 @@ getGroupInfo <- function(object){
     for(G in 4:8) {group2d=c(group2d,list(Index2[which(CGadj[,1]==C & CGadj[,2]==G)]))}}
   c(group2d,list(which(!allprobes%in%seqData$Probe.Set.Name)))
 }
-
-gcrma <- function (object,estimate="eb",summary.method = "medianpolish",normalize = TRUE,normalize.method = "quantiles", rho=.8,step=60,lower.bound=1,baseline=.25,...) {
+gcrma <- function (object,estimate="eb",summary.method = "medianpolish",normalize = TRUE,normalize.method = "quantiles", triple.goal=TRUE,rho=.8,step=60,lower.bound=1,baseline=.25,...) {
   old.bgcorrect.methods <- bgcorrect.methods
   on.exit(assign("bgcorrect.methods",old.bgcorrect.methods,env=.GlobalEnv))
   assign("bgcorrect.methods",c(bgcorrect.methods,"gcrma"), env=.GlobalEnv)
@@ -192,6 +191,6 @@ gcrma <- function (object,estimate="eb",summary.method = "medianpolish",normaliz
   assign("express.summary.stat.methods",c(express.summary.stat.methods,"rlm"), env=.GlobalEnv)
   
   gcgroup <- getGroupInfo(object)
-  res <- expresso(object,bgcorrect.method = "gcrma",bgcorrect.param =list(gcgroup,estimate,rho,step,lower.bound,baseline),pmcorrect.method = "pmonly",normalize=normalize,normalize.method =normalize.method ,summary.method = summary.method,...)
+  res <- expresso(object,bgcorrect.method = "gcrma",bgcorrect.param =list(gcgroup,estimate,rho,step,lower.bound,baseline,triple.goal),pmcorrect.method = "pmonly",normalize=normalize,normalize.method =normalize.method ,summary.method = summary.method,...)
   return(res)
 }

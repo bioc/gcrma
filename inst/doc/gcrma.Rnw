@@ -31,39 +31,15 @@
 \tableofcontents
 \section{Introduction}
 The \Rpackage{gcrma} package is part of the Bioconductor\footnote{\url{http://www.bioconductor.org/}} project. 
-The following terms are used throughout this document:
-\begin{description}
-\item[probe] oligonucleotides of 25 base pair length used to
-probe RNA targets.
-\item[perfect match] probes intended to match perfectly the
-target sequence.
-\item[$PM$] intensity value read from the perfect matches.
-\item[mismatch] the probes having one base mismatch
-  with the target sequence intended to account for non-specific binding.
-\item[$MM$] intensity value read from the mis-matches.
-\item[probe pair] a unit composed of a  perfect
-match and its mismatch.
-\item[affyID] an identification for a probe set (which can be a gene
-or a fraction of a gene) represented on the array.
-\item[probe pair set] $PM$s and $MM$s related to a common {\it affyID}.
-\item[{\it CEL} files] contain measured intensities and locations for
-an array that has been hybridized.
-\item[{\it CDF} file] contain the information relating probe pair sets
-to locations on the array.
-\end{description}
-
 
 \section{Getting Started: From probe level data to expression values}
 \label{sec:get.started}
-You will need the following libraries:
-affy, MASS and a library containint probe sequence data (such as hgu95av2probe).
+You will need to intall the {\tt affy} package. 
+and the a package containing probe sequence data (such as hgu95av2probe).
 The first thing you need to do is {\bf load the package}.
 \begin{Sinput}
 R> library(gcrma) ##load the gcrma package
 \end{Sinput}
-<<echo=F,results=hide>>=
-library(affy)
-@
 
 \subsection{Quick start}
 If all you want is to go from probe level data ({\it Cel} files) to

@@ -38,7 +38,7 @@ bg.adjust.constant <- function(x,k=6*fast+0.25*(1-fast),Q=0.25,fast=TRUE){
 
 bg.adjust.affinities <- function(x,affinities,index=seq(along=x),
                                  k=6*fast+0.25*(1-fast),Q=0.25,fast=TRUE){
-  parameters <- bg.parameters.ns(x[index],affinities,Q=Q)
+  parameters <- bg.parameters.ns(x[index],affinities)
   mu <- vector("numeric",length(x))
   sigma <- vector("numeric",length(x))
   mu[index] <- parameters$bg.mu
@@ -62,13 +62,13 @@ bg.adjust.fullmodel <- function(pms,mms,pm.affinities,mm.affinities,
                                 index.affinities,k=6*fast+0.25*(1-fast),
                                 Q=0.25,Qmm=0.5,rho=0.7,fast=TRUE){
   
-  parameters <- bg.parameters.ns(pms[index.affinities],pm.affinities,Q=Q)
+  parameters <- bg.parameters.ns(pms[index.affinities],pm.affinities,mm.affinities)
   mu.pm <- vector("numeric",length(pms))
   sigma <- vector("numeric",length(pms))
   mu.pm[index.affinities] <- parameters$bg.mu
   sigma[index.affinities] <- parameters$bg.sigma
 
-  parameters <- bg.parameters.ns(mms[index.affinities],mm.affinities,Q=Qmm)
+  parameters <- bg.parameters.ns(mms[index.affinities],mm.affinities,mm.affinities)
   mu.mm <-  vector("numeric",length(pms))
   mu.mm[index.affinities] <- parameters$bg.mu
   

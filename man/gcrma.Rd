@@ -16,10 +16,9 @@ gcrma(object,affinity.info=NULL,
 }
 \arguments{
   \item{object}{an \code{\link[affy:AffyBatch-class]{AffyBatch}}}
-  \item{affinity.info}{\code{NULL} or a list of three components:
-   apm,amm and index, for PM probe
-    affinities, MM probe affinities, the index of probes with known
-    sequence, respectively.}
+  \item{affinity.info}{\code{NULL} or an \code{AffyBatch} containing the
+    affinities in the \code{exprs} slot. This object can be created
+    using the function \code{\link{compute.affinities}}.}
   \item{type}{"fullmodel" for sequence and MM model. "affinities" for
     sequence information only. "mm" for using MM without sequence
     information.}
@@ -51,7 +50,8 @@ gcrma(object,affinity.info=NULL,
 \examples{
 if(require(affydata)){
      data(Dilution)
-     Dil.expr<-gcrma(Dilution,affinity.info=NULL,type="affinities")
+     ai <- compute.affinities(cdfName(Dilution))
+     Dil.expr<-gcrma(Dilution,affinity.info=ai,type="affinities")
 }
 }
 \keyword{manip}

@@ -6,16 +6,13 @@
 An internal function to calculate probe affinities from their
 sequences.}
 \usage{
-compute.affinities(cdfname,pmonly=FALSE,verbose=TRUE)
+compute.affinities(cdfname,verbose=TRUE)
 
 check.probes(probepackage,cdfname)
 }
 \arguments{
   \item{cdfname}{ Object of class \code{character} representing the name of
           \code{CDF} file associated with the arrays in the \code{AffyBatch}.}
-  \item{pmonly}{Logical value. If \code{TRUE}, only affinities of PM
-probes are calculated. If \code{FALSE}, both PM and MM probe affinities
-are calculated.}
 \item{probepackage}{\code{character} representing the name of the
   package with the probe sequence information.}
  \item{verbose}{Logical value. If \code{TRUE} messages about the progress of
@@ -31,13 +28,10 @@ is modeled as a spline function with 5 degrees of freedom.
 \code{check.probes} makes sure things are matching as they should.
 }
 
-\value{\code{compute.affinities} returns a list of the following components:
-
-  \code{apm}: affinities for PM probes.
-
-  \code{amm}: affinities for MM probes.
-
-  \code{index}: index of the subset of PM probes with sequence available.
+\value{\code{compute.affinities} returns an \code{AffyBatch} with the
+  affinities for PM probes in the pm locations and the affinities for MM
+  probes in the mm locations. NA  will be added for probes with no
+  sequence information.
 }
 \references{
 Hekstra, D., Taussig, A. R., Magnasco, M., and Naef, F. (2003) Absolute mRNA concentrations from sequence-specific calibration of oligonucleotide array. Nucleic Acids Research, 31. 1962-1968.

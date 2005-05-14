@@ -60,8 +60,9 @@ bg.adjust.affinities <- function(pms,mms,pm.affinities,mm.affinities,
 }
 
 bg.adjust.fullmodel <- function(pms,mms,pm.affinities,mm.affinities,
-                                index.affinities,k=6*fast+0.25*(1-fast),
-                                Q=0.25,Qmm=0.5,rho=0.7,fast=TRUE){
+                                index.affinities=seq(along=pms),
+                                k=6*fast+0.25*(1-fast),
+                                rho=0.7,fast=TRUE){
   
   parameters <- bg.parameters.ns(mms[index.affinities],mm.affinities,pm.affinities)
   mu.pm <- vector("numeric",length(pms))

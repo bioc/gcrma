@@ -7,7 +7,7 @@ Author: Jean(ZHIJIN) Wu, Rafael Irizarry
 	James MacDonald <jmacdon@med.umich.edu>	
 	Jeff Gentry
 Description:  Background adjustment using sequence information
-Maintainer: Z. Wu <zwu@jhsph.edu>
+Maintainer: Z. Wu <zwu@stat.brown.edu>
 License: LGPL
 Depends: R (>= 1.9), affy (>= 1.4), matchprobes 
 Suggests: affydata

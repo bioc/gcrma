@@ -8,7 +8,7 @@
 An internal function to be used by \code{\link{gcrma}}
 }
 \usage{
-bg.parameters.ns(x,affinities,affinities2)
+bg.parameters.ns(x,affinities,affinities2,affinities3)
 }
 \arguments{
   \item{x}{PM or MM intensities after optical background correction, before non-specific-binding correction.}
@@ -19,7 +19,10 @@ bg.parameters.ns(x,affinities,affinities2)
    Probe affinities for the probes whoes expected non-specific binding
    intensity is to be predicted.
 }  
- 
+ \item{affinities3}{
+   Probe affinities for another extra group of probes whoes expected non-specific binding
+   intensity is to be predicted.
+}  
 }
 %\details{}
 \value{a vector of same length as x.}

@@ -1,20 +1,20 @@
-\name{gcrma}
-\alias{gcrma}
-\alias{gcrma.bg.transformation.fast}
-\alias{gcrma.bg.transformation}
-\title{Robust Multi-Array expression measure using sequence information}
+\name{bg.adjust.gcrma}
+\alias{bg.adjust.gcrma}
+\title{GCRMA background adjust (internal function)}
 \description{
-  This function converts an \code{AffyBatch} into an \code{exprSet}
-  using the robust multi-array average (RMA) expression measure with help of probe sequence.
+  This function performs background adjustment (optical noise and
+  non-specific binding on an \code{AffyBatch}
+  project and returns an \code{AffyBatch} object in which the PM
+  intensities are adjusted.
 }
 \usage{
-gcrma(object,affinity.info=NULL,
-      affinity.source=c("reference","local"),NCprobe=NULL,
+bg.adjust.gcrma(object,affinity.info=NULL,
+      affinity.source=c("reference","local"),
+      NCprobe=NULL,
       type=c("fullmodel","affinities","mm","constant"),
       k=6*fast+0.5*(1-fast),stretch=1.15*fast+1*(1-fast),correction=1,
       GSB.adjust=TRUE,
-      rho=.7,optical.correct=TRUE,verbose=TRUE,fast=FALSE,
-      subset=NULL,normalize=TRUE,...)
+      rho=.7,optical.correct=TRUE,verbose=TRUE,fast=FALSE)
 }
 \arguments{
   \item{object}{an \code{\link[affy:AffyBatch-class]{AffyBatch}}}
@@ -24,9 +24,8 @@ gcrma(object,affinity.info=NULL,
   \item{affinity.source}{\code{reference}: use the package internal
     Non-specific binding data or \code{local}: use the experimental
     data in \code{object}. If \code{local} is chosen, either MM probes or a user-defined
-    list of probes (see \code{NCprobes}) are used to estimatee
-    affinities.}
-  \item{NCprobe}{Index of negative control probes. When set as
+    list of probes (see \code{NCprobes}) are used to estimate affinities.}
+  \item{NCprobe} {Index of negative control probes. When set as
     \code{NULL},the MM probes will be used. These probes
     are used to estimate parameters of non-specific binding on each
     array. These will be also used to estimate probe affinity profiles when
@@ -44,35 +43,29 @@ gcrma(object,affinity.info=NULL,
     background correction is performed.}
   \item{verbose}{Logical value. If \code{TRUE} messages about the progress of
     the function is printed.} 
-  \item{fast}{Logicalvalue. If \code{TRUE} a faster add-hoc algorithm is
+  \item{fast}{Logicalvalue. If \code{TRUE} a faster ad hoc algorithm is
     used.}
-  \item{subset}{a character vector with the the names of the probesets to be
-          used in expression calculation.}
-  \item{normalize}{logical value. If 'TRUE' normalize data using quantile
-    normalization.}
-   \item{...}{further arguments to be passed (not currently implemented -
-          stub for future use)}
 }
 \details{
-  Note that this expression measure is given to you in log base 2
-  scale. This differs from most of the other expression measure
-  methods.
-
+  The returned value is an \code{AffyBatch} object, in which the PM probe intensities
+  have been background adjusted. The rest is left the same as the
+  starting \code{AffyBatch} object.
+  
   The tunning factor \code{k} will have different meainngs if one uses
-  the fast (add-hoc) algorithm or the empirical bayes approach. See Wu
+  the fast (ad hoc) algorithm or the empirical bayes approach. See Wu
   et al. (2003)
-     
+    
 }
 \value{
- An \code{exprSet}.
+ An \code{AffyBatch}.
 }
 \author{Rafeal Irizarry}
 \examples{
-if(require(affydata) & require(hgu95av2probe) & require(hgu95av2cdf)){
-     data(Dilution)
-     ai <- compute.affinities(cdfName(Dilution))
-     Dil.expr<-gcrma(Dilution,affinity.info=ai,type="affinities")
-}
+ if(require(affydata) & require(hgu95av2probe) & require(hgu95av2cdf)){
+          data(Dilution)
+          ai <- compute.affinities(cdfName(Dilution))
+          Dil.adj<-bg.adjust.gcrma(Dilution,affinity.info=ai,type="affinities")
+     }
 }
 \keyword{manip}
 

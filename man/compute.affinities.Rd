@@ -1,6 +1,13 @@
 \name{compute.affinities}
 \alias{compute.affinities}
 \alias{check.probes}
+\alias{base.profiles}
+\alias{base.profiles.mm}
+\alias{base.profiles.nc}
+\alias{compute.affinity.coef}
+\alias{compute.affinities.local}
+\alias{plotBaseProfiles}
+
 \title{Probe Affinity computation}
 \description{
 An internal function to calculate probe affinities from their

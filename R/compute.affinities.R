@@ -1,5 +1,5 @@
 compute.affinities <- function(cdfname,verbose=TRUE){
-  
+  if(verbose) cat("Computing affinities")   
   require(splines,quietly = TRUE)
   require(matchprobes,quietly = TRUE)
   data(affinity.spline.coefs) ###needs to change to data(something)
@@ -65,6 +65,7 @@ compute.affinities <- function(cdfname,verbose=TRUE){
   tmp.exprs[pmIndex[subIndex]]=apm
   if(!is.null(amm)){ tmp.exprs[mmIndex[subIndex]]=amm }
   exprs(affinity.info)=tmp.exprs
+  if(verbose) cat("Done.\n")
   return(affinity.info)
 }
 

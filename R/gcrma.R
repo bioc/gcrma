@@ -1,95 +1,82 @@
 gcrma <- function(object,affinity.info=NULL,
+                  affinity.source=c("reference","local"),
+                  NCprobe=NULL,
                   type=c("fullmodel","affinities","mm","constant"),
-                  k=6*fast+0.5*(1-fast),stretch=1.15*fast+1*(1-fast),
-                  correction=1,rho=0.7,
-                  optical.correct=TRUE,verbose=TRUE,fast=TRUE){
-  
-  type <- match.arg(type)
-  
-  
-  pmonly <- (type=="affinities"|type=="constant")
-  needaff <- (type=="fullmodel"|type=="affinities")
-  if( needaff & is.null(affinity.info)){
-    if(verbose) cat("Computing affinities")
-    affinity.info <- compute.affinities(cdfName(object),verbose=verbose)
-    if(verbose) cat("Done.\n")
-  }
-  
+                  k=6*fast+0.5*(1-fast),stretch=1.15*fast+1*(1-fast),correction=1,
+                  GSB.adjust=TRUE,rho=0.7,
+                  optical.correct=TRUE,verbose=TRUE,fast=FALSE,
+                  subset=NULL,normalize=TRUE,...){
+  object <- bg.adjust.gcrma(object,
+                            affinity.info=affinity.info,
+                            affinity.source=affinity.source, NCprobe=NCprobe,
+                            type=type,k=k,stretch=stretch,correction=correction,
+                            GSB.adjust=GSB.adjust,rho=rho,
+                            optical.correct=optical.correct,verbose=verbose,fast=fast)
+  return(rma(object,subset=subset,background=FALSE,normalize=normalize,verbose=verbose))
+}
+
+
+
+bg.adjust.gcrma <- function(object,affinity.info=NULL,
+                            affinity.source=c("reference","local"),
+                            NCprobe=NULL,
+                            type=c("fullmodel","affinities","mm","constant"),
+                            k=6*fast+0.5*(1-fast),stretch=1.15*fast+1*(1-fast),correction=1,
+                            GSB.adjust=TRUE,rho=0.7,
+                            optical.correct=TRUE,verbose=TRUE,fast=FALSE){
+  ##OPTICAL BG
   if(optical.correct)
     object <- bg.adjust.optical(object,verbose=verbose)
-  
-  pm(object) <- gcrma.engine(pms=pm(object),
-                             mms=mm(object),
-                             pm.affinities=pm(affinity.info),
-                             mm.affinities=mm(affinity.info),
-                             type=type,k=k,
-                             stretch=stretch,
-                             correction=correction,rho=rho,
-                             verbose=verbose,fast=fast)
-  
-  return(rma(object,background=FALSE,verbose=verbose))
-}
-
-##for now we need the mms for everything
-gcrma.engine <- function(pms,mms,pm.affinities=NULL,mm.affinities=NULL,
-                         type=c("fullmodel","affinities","mm","constant"),
-                         k=6*fast+0.25*(1-fast),
-                         stretch=1.15*fast+1*(1-fast),correction=1,rho=0.7,
-                         verbose=TRUE,fast=TRUE){
-  
   type <- match.arg(type)
-  
-  if(!is.null(pm.affinities)){
-    index.affinities <- which(!is.na(pm.affinities))
-    pm.affinities <- pm.affinities[index.affinities]
-    if(!is.null(mm.affinities)){
-      mm.affinities <- mm.affinities[index.affinities]
-    }
-  }
-  
-  if(type=="fullmodel" | type=="affinities"){
-    set.seed(1)
-    Subset <- sample(1:length(pms[index.affinities,]),25000)
-    y <- log2(pms)[index.affinities,][Subset]
-    Subset <- (Subset-1)%%nrow(pms[index.affinities,])+1
-    x <- pm.affinities[Subset]
-    fit1 <- lm(y~x)
-  }
-  
-  
-  if(verbose) cat("Adjusting for non-specific binding")
-  for(i in 1:ncol(pms)){
-    if(verbose) cat(".")
-    if(type=="fullmodel"){
-      pms[,i] <- bg.adjust.fullmodel(pms[,i],mms[,i],
-                                     pm.affinities,mm.affinities,
-                                     index.affinities,k=k,
-                                     rho=rho,fast=fast)
-      pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
-                                    fit1$coef[2]*pm.affinities+mean(fit1$coef[2]*pm.affinities))
-    }
-    if(type=="affinities"){
-      pms[,i] <- bg.adjust.affinities(pms[,i],mms[,i],
-                                      pm.affinities,mm.affinities,
-                                      index.affinities, k=k,
-                                      fast=fast)
-      pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
-                                    fit1$coef[2]*pm.affinities + 
-                                    mean(fit1$coef[2]*pm.affinities))
-    }
-    if(type=="mm") pms[,i] <- bg.adjust.mm(pms[,i],correction*mms[,i],k=k,fast=fast)
-    if(type=="constant"){
-      pms[,i] <- bg.adjust.constant(pms[,i],k=k,Q=correction*mean(pms[,i]<mms[,i]),fast=fast)
-    }
-    if(stretch!=1){
-      mu <- mean(log(pms[,i]))
-      pms[,i] <- exp(mu + stretch*(log(pms[,i])-mu))
-    }
-  }
+  pmonly <- (type=="affinities"|type=="constant")
+  needaff <- (type=="fullmodel"|type=="affinities")
+  ##OBTAIN AFFINITY.INFO
 
-  if(verbose) cat("Done.\n")
+  Source=match.arg(affinity.source)
+  if( needaff & is.null(affinity.info) & Source=="reference" )  ##use the GCRMA internal NSB data 
+    affinity.info <- compute.affinities(cdfName(object),verbose=verbose)
+  if( needaff & is.null(affinity.info) & Source=="local" )  ##use experimental data
+    affinity.info <- compute.affinities.local(object,Array=NULL,NCprobe=NCprobe,
+                                              verbose=verbose,optical.correct=FALSE)
 
-  return(pms)
+  ##clean NCprobe
+  if(!is.null(NCprobe)){
+    if(length(affinity.info)==1){
+      anc=as.matrix(intensity(affinity.info)[NCprobe,])
+      index2=which(!is.na(anc))
+      anc=anc[index2,];ncs=intensity(object)[index2,]}
+    else {
+      anc=intensity(affinity.info)[NCprobe,1]
+      index2=which(!is.na(anc))
+      NCprobe=NCprobe[index2]}
+  }
+  else anc=ncs=NULL
+  
+  pmIndex=unlist(indexProbes(object,"pm"))
+  mmIndex=unlist(indexProbes(object,"mm"))
+  
+  if(!is.null(affinity.info)){
+    if(length(affinity.info)==1){ #one array affinity.info, NCprobe=MM
+      pm(object) <- gcrma.engine(pms=pm(object),
+                                 mms=mm(object),ncs,
+                                 pm.affinities=pm(affinity.info),
+                                 mm.affinities=mm(affinity.info),anc,
+                                 type=type,k=k,
+                                 stretch=stretch,
+                                 correction=correction,GSB.adjust=GSB.adjust,rho=rho,
+                                 verbose=verbose,fast=fast)
+    }
+    else if (length(affinity.info)==length(object)){#multi-array affinity.info
+      pm(object) <- gcrma.engine2(object,pmIndex,mmIndex,
+                                  NCprobe=NCprobe,
+                                  affinity.info,
+                                  type=type,k=k,
+                                  stretch=stretch,
+                                  correction=correction,GSB.adjust=GSB.adjust,rho=rho,
+                                  verbose=verbose,fast=fast)}
+  }
+  else{#local affinity.info, not provided.
+    
+  }
+  return(object)
 }
-
-

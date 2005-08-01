@@ -1,3 +1,4 @@
+
 bg.adjust.optical <- function(abatch,minimum=1,verbose=TRUE){
   Index <- unlist(indexProbes(abatch,"both"))
 
@@ -12,7 +13,64 @@ bg.adjust.optical <- function(abatch,minimum=1,verbose=TRUE){
   abatch
 }
 
-bg.adjust.mm <- function(pms,mms,k=6*fast+0.25*(1-fast),fast=TRUE){
+
+##########################################################################################
+bg.adjust.fullmodel<- function(pms,mms,ncs=NULL,apm,amm,anc=NULL,index.affinities,k=k,rho=.7,fast=FALSE){
+  if(is.null(ncs)){
+    parameters <- bg.parameters.ns(mms[index.affinities],amm,apm)
+    mu.pm <- vector("numeric",length(pms))
+    mu.mm <-  vector("numeric",length(pms))
+    mu.pm[index.affinities] <- parameters$bg.mu2
+    mu.mm[index.affinities] <- parameters$bg.mu
+    sigma<- parameters$bg.sigma
+  }
+  
+  else{
+    parameters <- bg.parameters.ns(ncs,anc,apm,amm)
+    mu.pm <- vector("numeric",length(pms))
+    mu.mm <-  vector("numeric",length(pms))
+    mu.pm[index.affinities] <- parameters$bg.mu2
+    mu.mm[index.affinities] <- parameters$bg.mu3
+    sigma<- parameters$bg.sigma
+  }
+  
+  ##fill in the pms for which we dont have affinities
+  if(length(index.affinities)<length(pms)){
+    mu.pm[-index.affinities] <- median(mu.pm[index.affinities])
+    mu.mm[-index.affinities] <- median(mu.mm[index.affinities])
+  } 
+  
+  if(fast){
+    ##this is the unbiased  
+    bhat <- exp(mu.pm + rho*(log(mms)-mu.mm) + 1/2*(1 - rho^2)*sigma^2)
+    var.y=exp(2*mu.pm+sigma^2)*(exp(sigma^2)-exp(sigma^2*rho^2))
+    return(gcrma.bg.transformation.fast(pms,bhat,var.y,k=k))
+  }
+  else return(gcrma.bg.transformation(pms,mu.pm + rho*(log(mms)-mu.mm),sqrt(1 - rho^2)*sigma,k=k))
+}
+
+##########################################################################################
+bg.adjust.affinities<- function(pms,ncs,apm,anc,index.affinities,k=k,fast=FALSE){
+
+  parameters <- bg.parameters.ns(ncs[index.affinities],anc,apm)
+  mu.pm <- vector("numeric",length(pms))
+  mu.pm[index.affinities] <- parameters$bg.mu2
+  sigma<- parameters$bg.sigma
+  ##fill in the pms for which we dont have affinities
+  if(length(index.affinities)<length(pms)){
+    mu.pm[-index.affinities] <- median(mu.pm[index.affinities])
+  } 
+  
+  if(fast){
+    ##this is the unbiased  
+    bhat <- exp(mu.pm +  1/2*sigma^2)
+    var.y=exp(2*mu.pm+sigma^2)*(exp(sigma^2)-1)
+    return(gcrma.bg.transformation.fast(pms,bhat,var.y,k=k))
+  }
+  else return(gcrma.bg.transformation(pms,mu.pm,sigma,k=k))
+} 
+##########################################################################################
+bg.adjust.mm <- function(pms,mms,k=6*fast+0.25*(1-fast),fast=FALSE){
   mu <- log(mms)
   Index <- which(pms<mms)
   sigma <- sqrt(mean((log(pms)[Index]-mu[Index])^2))
@@ -24,7 +82,8 @@ bg.adjust.mm <- function(pms,mms,k=6*fast+0.25*(1-fast),fast=TRUE){
   else return(gcrma.bg.transformation(pms,bhat,var.y,k=k))
 }
 
-bg.adjust.constant <- function(x,k=6*fast+0.25*(1-fast),Q=0.25,fast=TRUE){
+##########################################################################################
+bg.adjust.constant <- function(x,k=6*fast+0.25*(1-fast),Q=0.25,fast=FALSE){
   mu <- log(quantile(x,Q))
   sigma <- left.sigma(log(x),mu)
  
@@ -33,59 +92,6 @@ bg.adjust.constant <- function(x,k=6*fast+0.25*(1-fast),Q=0.25,fast=TRUE){
      var.y <- rep(exp(2*mu+sigma^2)*(exp(sigma^2)-1),length(x))
      return(gcrma.bg.transformation.fast(x,bhat,var.y,k=k))
    }
-  else return(gcrma.bg.transformation(x,mu,sigma,k=k))
+  else return(gcrma.bg.transformation(x,rep(mu,length(x)),sigma,k=k))
 }
-
-bg.adjust.affinities <- function(pms,mms,pm.affinities,mm.affinities,
-                                 index.affinities=seq(along=pms),
-                                 k=6*fast+0.25*(1-fast),fast=TRUE){
-    parameters <- bg.parameters.ns(mms[index.affinities],mm.affinities,pm.affinities)
-  mu <- vector("numeric",length(pms))
-  sigma <- vector("numeric",length(pms))
-  mu[index.affinities] <- parameters$bg.mu2
-  sigma[index.affinities] <- parameters$bg.sigma
-  
-  ##fill in the pms for which we dont have affinities
-  if(length(index.affinities)<length(pms)){
-    mu[-index.affinities] <- median(mu[index.affinities])
-    sigma[-index.affinities] <- median(sigma[index.affinities])
-  }
-  
-  if(fast){
-      bhat <- exp(mu + 1/2*sigma^2)
-      var.y <- exp(2*mu+sigma^2)*(exp(sigma^2)-1)
-      return(gcrma.bg.transformation.fast(pms,bhat,var.y,k=k))
-    }
-  else return(gcrma.bg.transformation(pms,mu,sigma,k=k))
-}
-
-bg.adjust.fullmodel <- function(pms,mms,pm.affinities,mm.affinities,
-                                index.affinities=seq(along=pms),
-                                k=6*fast+0.25*(1-fast),
-                                rho=0.7,fast=TRUE){
-  
-  parameters <- bg.parameters.ns(mms[index.affinities],mm.affinities,pm.affinities)
-  mu.pm <- vector("numeric",length(pms))
-  mu.mm <-  vector("numeric",length(pms))
-  sigma <- vector("numeric",length(pms))
-  mu.pm[index.affinities] <- parameters$bg.mu2
-  mu.mm[index.affinities] <- parameters$bg.mu
-  sigma[index.affinities] <- parameters$bg.sigma
-
-  ##fill in the pms for which we dont have affinities
-  if(length(index.affinities)<length(pms)){
-    mu.pm[-index.affinities] <- median(mu.pm[index.affinities])
-    mu.mm[-index.affinities] <- median(mu.mm[index.affinities])
-    sigma[-index.affinities] <- median(sigma[index.affinities])
-  } 
-  
-  ##mu.mm <- mu.mm-mean(mu.mm)+mean(mu.pm) ##correction in case not the same
-  ##this is the unbiased
-  
-  if(fast){
-    bhat <- exp(mu.pm + rho*(log(mms)-mu.mm) + 1/2*(1 - rho^2)*sigma^2)
-    var.y=exp(2*mu.pm+sigma^2)*(exp(sigma^2)-exp(sigma^2*rho^2))
-    return(gcrma.bg.transformation.fast(pms,bhat,var.y,k=k))
-  }
-  else return(gcrma.bg.transformation(pms,mu.pm + rho*(log(mms)-mu.mm),sqrt(1 - rho^2)*sigma,k=k))
-}
+left.sigma <- function(x,mu) sqrt(mean((x[x<mu]-mu)^2))

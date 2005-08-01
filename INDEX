@@ -1,5 +1,6 @@
 affinity.spline.coefs   Spline coefficients for estimation of affinity
                         from probe sequence
+bg.adjust.gcrma		Background adjustment using GCRMA 
 bg.adjust.affinities    Background adjustment with sequence
                         information (internal function)
 bg.parameters.ns        Estimation of non-specific Binding Background

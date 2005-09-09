@@ -13,7 +13,7 @@ gcrma(object,affinity.info=NULL,
       type=c("fullmodel","affinities","mm","constant"),
       k=6*fast+0.5*(1-fast),stretch=1.15*fast+1*(1-fast),correction=1,
       GSB.adjust=TRUE,
-      rho=.7,optical.correct=TRUE,verbose=TRUE,fast=FALSE,
+      rho=.7,optical.correct=TRUE,verbose=TRUE,fast=TRUE,
       subset=NULL,normalize=TRUE,...)
 }
 \arguments{
@@ -44,7 +44,7 @@ gcrma(object,affinity.info=NULL,
     background correction is performed.}
   \item{verbose}{Logical value. If \code{TRUE} messages about the progress of
     the function is printed.} 
-  \item{fast}{Logicalvalue. If \code{TRUE} a faster add-hoc algorithm is
+  \item{fast}{Logical value. If \code{TRUE} a faster ad hoc algorithm is
     used.}
   \item{subset}{a character vector with the the names of the probesets to be
           used in expression calculation.}

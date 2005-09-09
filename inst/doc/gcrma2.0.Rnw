@@ -1,7 +1,7 @@
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
 %\VignetteIndexEntry{gcrma1.2}
 %\VignetteKeywords{Preprocessing, Affymetrix}
-%\VignetteDepends{affy,matchprobes,tools,hgu95av2probe,hgu95v2acdf,splines}
+%\VignetteDepends{affy,matchprobes,tools,splines}
 %\VignettePackage{gcrma}
 %documentclass[12pt, a4paper]{article}
 \documentclass[12pt]{article}
@@ -94,8 +94,6 @@ We added a function \Rfunction{bg.adjust.gcrma} for the convenience  of performi
 gcrma background adjustment only, without summarizing  into gene level
 data. 
 
-We have improved the speed of  the function and therefore changed the default 
-setting in function \Rfunction{gcrma} from \Rfunarg{fast=TRUE} to \Rfunarg{fast=FALSE}.
 
 In earlier versions, we compute the sequence-determined probe
 affinities using parameters estimated from data obtained in our
@@ -172,9 +170,9 @@ The first thing you need to do is {\bf load the package}.
 \begin{Sinput}
 R> library(gcrma) ##load the gcrma package
 \end{Sinput}
-<<echo=F,results=hide>>=
-library(gcrma)
-@
+%%<<echo=F,results=hide>>=
+%%library(gcrma)
+%%@
 If all you want is to go from probe level data ({\it Cel} files) to
 expression measures here are some quick ways.
 
@@ -207,10 +205,10 @@ R> eset <- gcrma(Data)
 R> require(affydata)
 R> data(Dilution)
 \end{Sinput}
-<<echo=F,results=hide>>=
-require(affydata)
-data(Dilution)
-@
+%%<<echo=F,results=hide>>=
+%%require(affydata)
+%%data(Dilution)
+%%@
 
 \begin{enumerate}
 \item Obtain expression values
@@ -218,9 +216,9 @@ data(Dilution)
 \begin{Sinput}
   R> Dil.expr1<-gcrma(Dilution)
 \end{Sinput}
-<<echo=F,results=hide>>=
-Dil.expr1<-gcrma(Dilution)
-@ 
+%%<<echo=F,results=hide>>=
+%%Dil.expr1<-gcrma(Dilution)
+%%@ 
 
  To use the faster ad hoc procedure one can call
 \begin{Sinput}

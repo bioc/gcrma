@@ -7,7 +7,7 @@
   using the robust multi-array average (RMA) expression measure with help of probe sequences.
 }
 \usage{
-just.gcrma <- function(..., filenames=character(0),
+just.gcrma(..., filenames=character(0),
                        phenoData=new("phenoData"),
                        description=NULL,
                        notes="", compress=getOption("BioC")$affy$compress.cel,
@@ -17,7 +17,7 @@ just.gcrma <- function(..., filenames=character(0),
                        correction=1, rho=0.7, optical.correct=TRUE,
                        verbose=TRUE, fast=TRUE, minimum=1, optimize.by=c("speed","memory"))
 
-justGCRMA <- function(..., filenames=character(0),
+justGCRMA(..., filenames=character(0),
                      widget=getOption("BioC")$affy$use.widgets,
                      compress=getOption("BioC")$affy$compress.cel,
                      celfile.path=getwd(),
@@ -61,6 +61,15 @@ justGCRMA <- function(..., filenames=character(0),
     used.}
   \item{optimize.by}{"speed" will use a faster algorithm but more RAM, and "memory"
     will be slower, but require less RAM.}
+  \item{bgversion}{integer value indicating which RMA background to use 1: use
+          background similar to pure R rma background given in affy
+          version 1.0 - 1.0.2 2: use background similar to pure R rma
+          background given in affy version 1.1 and above.} 
+  \item{minimum}{.}
+  \item{celfile.path}{a character denoting the path 'ReadAffy' should look for
+          cel files}
+  \item{sampleNames}{ a character vector of sample names to be used in the
+          'AffyBatch'}
 }
 \details{
   This method should require much less RAM than the conventional

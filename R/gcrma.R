@@ -4,7 +4,7 @@ gcrma <- function(object,affinity.info=NULL,
                   type=c("fullmodel","affinities","mm","constant"),
                   k=6*fast+0.5*(1-fast),stretch=1.15*fast+1*(1-fast),correction=1,
                   GSB.adjust=TRUE,rho=0.7,
-                  optical.correct=TRUE,verbose=TRUE,fast=FALSE,
+                  optical.correct=TRUE,verbose=TRUE,fast=TRUE,
                   subset=NULL,normalize=TRUE,...){
   object <- bg.adjust.gcrma(object,
                             affinity.info=affinity.info,
@@ -23,7 +23,7 @@ bg.adjust.gcrma <- function(object,affinity.info=NULL,
                             type=c("fullmodel","affinities","mm","constant"),
                             k=6*fast+0.5*(1-fast),stretch=1.15*fast+1*(1-fast),correction=1,
                             GSB.adjust=TRUE,rho=0.7,
-                            optical.correct=TRUE,verbose=TRUE,fast=FALSE){
+                            optical.correct=TRUE,verbose=TRUE,fast=TRUE){
   ##OPTICAL BG
   if(optical.correct)
     object <- bg.adjust.optical(object,verbose=verbose)

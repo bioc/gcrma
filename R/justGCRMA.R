@@ -6,13 +6,13 @@ justGCRMA <- function(..., filenames=character(0),
                      sampleNames=NULL,
                      phenoData=NULL,
                      description=NULL,
-                     notes="", normalize=TRUE, 
+                     notes="",
+                     normalize=TRUE, 
                      bgversion=2, affinity.info=NULL,
                      type=c("fullmodel","affinities","mm","constant"),
                      k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                      correction=1, rho=0.7, optical.correct=TRUE,
-                     verbose=TRUE, fast=TRUE, minimum=1,
-                     optimize.by = c("speed","memory")){
+                     verbose=TRUE, fast=TRUE, minimum=1, optimize.by = c("speed","memory")){
 
   require(affy, quietly = TRUE)
 
@@ -51,8 +51,7 @@ just.gcrma <- function(..., filenames=character(0),
                        type=c("fullmodel","affinities","mm","constant"),
                        k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                        correction=1, rho=0.7, optical.correct=TRUE,
-                       verbose=TRUE, fast=TRUE, minimum=1,
-                       optimize.by = c("speed","memory")) {
+                       verbose=TRUE, fast=TRUE, minimum=1, optimize.by = c("speed","memory")) {
 
   require(affy, quietly=TRUE)
 
@@ -191,17 +190,16 @@ fast.bkg <- function(filenames, pm.affinities, mm.affinities,
 
           
     if(type=="fullmodel"){
-      pms[,i] <- bg.adjust.fullmodel(pms[,i],mms[,i],
-                                     pm.affinities,mm.affinities,
+      pms[,i] <- bg.adjust.fullmodel(pms[,i],mms[,i],ncs=NULL,
+                                     pm.affinities,mm.affinities,anc=NULL,
                                      index.affinities,k=k,
                                      rho=rho,fast=fast)
       pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
                                     fit1$coef[2]*pm.affinities+mean(fit1$coef[2]*pm.affinities))
     }
     if(type=="affinities"){
-      pms[,i] <- bg.adjust.affinities(pms[,i],pm.affinities,
+      pms[,i] <- bg.adjust.affinities(pms[,i],ncs=mms[,i],pm.affinities,mm.affinities,
                                       index.affinities, k=k,
-                                      Q=correction*mean(pms[,i]<mms[,i]),
                                       fast=fast)
       pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
                                     fit1$coef[2]*pm.affinities + 
@@ -262,17 +260,16 @@ mem.bkg <- function(filenames, pm.affinities, mm.affinities,
       mm <- mm - tmps[i] + minimum
           
     if(type=="fullmodel"){
-      pms[,i] <- bg.adjust.fullmodel(pms[,i],mm,
-                                     pm.affinities,mm.affinities,
+      pms[,i] <- bg.adjust.fullmodel(pms[,i],mm,ncs=NULL,
+                                     pm.affinities,mm.affinities,anc=NULL,
                                      index.affinities,k=k,
                                      rho=rho,fast=fast)
       pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
                                     fit1$coef[2]*pm.affinities+mean(fit1$coef[2]*pm.affinities))
     }
     if(type=="affinities"){
-      pms[,i] <- bg.adjust.affinities(pms[,i],pm.affinities,
+      pms[,i] <- bg.adjust.affinities(pms[,i],ncs=mm,pm.affinities,mm.affinities,
                                       index.affinities, k=k,
-                                      Q=correction*mean(pms[,i]<mm),
                                       fast=fast)
       pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
                                     fit1$coef[2]*pm.affinities + 

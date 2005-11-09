@@ -1,5 +1,4 @@
-.First.lib <- function(libname, pkgname, where) {
-  library.dynam("gcrma", pkgname, libname)  
+.onAttach <- function(libname, pkgname, where) {
 
   where <- match(paste("package:", pkgname, sep=""), search())
 

@@ -1,0 +1,3 @@
+useDynLib(gcrma)
+
+export(average.for.PAV, base.profiles, base.profiles.mm, base.profiles.nc, bg.adjust.affinities, bg.adjust.constant, bg.adjust.fullmodel, bg.adjust.gcrma, bg.adjust.mm, bg.adjust.optical, bg.parameters.ns, check.probes, compute.affinities, compute.affinities.local, compute.affinity.coef, fast.bkg, gcrma, gcrma.bg.transformation, gcrma.bg.transformation.fast, gcrma.engine, gcrma.engine2, getCDF, getProbePackage, just.gcrma, justGCRMA, left.sigma, mem.bkg, PAV, plotBaseProfiles)

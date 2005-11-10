@@ -44,7 +44,7 @@ bg.adjust.gcrma <- function(object,affinity.info=NULL,
     if(length(affinity.info)==1){
       anc=as.matrix(intensity(affinity.info)[NCprobe,])
       index2=which(!is.na(anc))
-      anc=anc[index2,];ncs=intensity(object)[index2,]}
+      anc=anc[index2,];ncs=as.matrix(intensity(object)[index2,])}
     else {
       anc=intensity(affinity.info)[NCprobe,1]
       index2=which(!is.na(anc))

@@ -10,9 +10,9 @@
 \usage{
 fast.bkg(filenames, pm.affinities, mm.affinities, index.affinities,
 type, minimum, optical.correct, verbose, k, rho, correction, stretch,
-fast)
+fast, cdfname)
 mem.bkg(filenames, pm.affinities, mm.affinities, index.affinities, type,
-minimum, optical.correct, verbose, k, rho, correction, stretch, fast)
+minimum, optical.correct, verbose, k, rho, correction, stretch, fast, cdfname)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -35,6 +35,11 @@ minimum, optical.correct, verbose, k, rho, correction, stretch, fast)
   \item{stretch}{  }
   \item{fast}{ Logical value. If \code{TRUE}, then a faster ad hoc
     algorithm is used. }
+  \item{cdfname}{Used to specify the name of an alternative cdf package. If set to
+    \code{NULL}, the usual cdf package based on Affymetrix' mappings
+    will be used. Note that the name should not include the 'cdf' on
+    the end, and that the corresponding probe package is also required
+    to be installed. If either package is missing an error will result.}
 }
 \details{
   Note that this expression measure is given to you in log base 2

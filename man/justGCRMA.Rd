@@ -7,7 +7,7 @@
   using the robust multi-array average (RMA) expression measure with help of probe sequences.
 }
 \usage{
-just.gcrma(..., filenames=character(0),
+            just.gcrma(..., filenames=character(0),
                        phenoData=new("phenoData"),
                        description=NULL,
                        notes="", compress=getOption("BioC")$affy$compress.cel,
@@ -15,9 +15,10 @@ just.gcrma(..., filenames=character(0),
                        type=c("fullmodel","affinities","mm","constant"),
                        k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                        correction=1, rho=0.7, optical.correct=TRUE,
-                       verbose=TRUE, fast=TRUE, minimum=1, optimize.by=c("speed","memory"))
+                       verbose=TRUE, fast=TRUE, minimum=1, optimize.by = c("speed","memory"),
+                       cdfname = NULL)
 
-justGCRMA(..., filenames=character(0),
+            justGCRMA(..., filenames=character(0),
                      widget=getOption("BioC")$affy$use.widgets,
                      compress=getOption("BioC")$affy$compress.cel,
                      celfile.path=getwd(),
@@ -30,7 +31,8 @@ justGCRMA(..., filenames=character(0),
                      type=c("fullmodel","affinities","mm","constant"),
                      k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                      correction=1, rho=0.7, optical.correct=TRUE,
-                     verbose=TRUE, fast=TRUE, minimum=1, optimize.by=c("speed","memory"))
+                     verbose=TRUE, fast=TRUE, minimum=1, optimize.by = c("speed","memory"),
+                     cdfname = NULL)
 }
 \arguments{
   \item{\dots}{ file names separated by comma.}
@@ -69,7 +71,12 @@ justGCRMA(..., filenames=character(0),
   \item{celfile.path}{a character denoting the path 'ReadAffy' should look for
           cel files}
   \item{sampleNames}{ a character vector of sample names to be used in the
-          'AffyBatch'}
+    'AffyBatch'}
+  \item{cdfname}{Used to specify the name of an alternative cdf package. If set to
+     \code{NULL}, the usual cdf package based on Affymetrix' mappings
+     will be used. Note that the name should not include the 'cdf' on
+     the end, and that the corresponding probe package is also required
+     to be installed. If either package is missing an error will result.}
 }
 \details{
   This method should require much less RAM than the conventional

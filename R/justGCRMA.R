@@ -151,7 +151,7 @@ just.gcrma <- function(..., filenames=character(0),
   
   exprs <- .Call("rma_c_complete",pms,pms,probenames,ngenes,body(bg.dens),new.env(),normalize,background=FALSE,bgversion,PACKAGE="affy")
 
-  colnames(exprs) <- filenames
+  colnames(exprs) <- samplenames
   se.exprs <- array(NA, dim(exprs))
   
   annotation <- annotation(tmp)

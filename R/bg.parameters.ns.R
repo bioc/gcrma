@@ -14,7 +14,7 @@ bg.parameters.ns=function (x, affinities,affinities2=NULL,affinities3=NULL)
        res=lo1$res[lo1$res<0];res=c(res,-res)
        bg.sigma=mad(res)
 
-       if (is.null(affinities2))        return(list(bg.mu=bg.mu,bg.mu2=bg.mu2,bg.sigma=bg.sigma))
+       if (is.null(affinities3))        return(list(bg.mu=bg.mu,bg.mu2=bg.mu2,bg.sigma=bg.sigma))
        
        else {bg.mu3=predict(lo1,affinities3)
              bg.mu3[affinities3>max(affinities[sample1])]=max(lo1$fitted)

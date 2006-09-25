@@ -17,9 +17,9 @@ gcrma.engine <- function(pms,mms,ncs=NULL,
 ###get GSB.adjust parameters
   if(GSB.adjust &(type=="fullmodel" | type=="affinities")){
     set.seed(1)
-      Subset <- sample(1:length(pms[index.affinities,]),25000)
+      Subset <- sample(1:length(as.matrix(pms)[index.affinities,]),25000)
     y <- log2(pms)[index.affinities,][Subset]
-    Subset <- (Subset-1)%%nrow(pms[index.affinities,])+1
+    Subset <- (Subset-1)%%nrow(as.matrix(pms)[index.affinities,])+1
     x <- pm.affinities[Subset]
     fit1 <- lm(y~x)$coef
   }

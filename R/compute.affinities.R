@@ -1,7 +1,5 @@
 compute.affinities <- function(cdfname,verbose=TRUE){
   if(verbose) cat("Computing affinities")   
-  require(splines,quietly = TRUE)
-  require(matchprobes,quietly = TRUE)
   data(affinity.spline.coefs) ###needs to change to data(something)
   affinity.basis.matrix <- ns(1:25,df=length(affinity.spline.coefs)/3)
   

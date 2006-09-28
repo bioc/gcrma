@@ -1,9 +1,0 @@
-.onAttach <- function(libname, pkgname, where) {
-
-  where <- match(paste("package:", pkgname, sep=""), search())
-
-  require(affy, quietly=TRUE) ##Biobase uses methods
-
-  cacheMetaData(as.environment(where))
-
-}

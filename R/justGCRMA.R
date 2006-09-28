@@ -15,8 +15,6 @@ justGCRMA <- function(..., filenames=character(0),
                      verbose=TRUE, fast=TRUE, minimum=1, optimize.by = c("speed","memory"),
                       cdfname = NULL){
 
-  require(affy, quietly = TRUE)
-
    l <- AllButCelsForReadAffy(..., filenames=filenames,
                              widget=widget,
                              celfile.path=celfile.path,
@@ -55,8 +53,6 @@ just.gcrma <- function(..., filenames=character(0),
                        correction=1, rho=0.7, optical.correct=TRUE,
                        verbose=TRUE, fast=TRUE, minimum=1, optimize.by = c("speed","memory"),
                        cdfname = NULL) {
-
-  require(affy, quietly=TRUE)
 
   auxnames <- as.list(substitute(list(...)))[-1]
   filenames <- .Primitive("c")(filenames, auxnames)

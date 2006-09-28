@@ -57,7 +57,6 @@ base.profiles <- function(intensities,seqs){
   mS <- .Call("gcrma_getSeq2",paste(seqs,collapse=""),length(seqs),PACKAGE="gcrma")
 
   ##Create a basis matrix
-  require(splines)
   B <- ns(1:25,df=5)
   ##Create the prediction matrix in the model
   X <- cbind(mS[,1:25]%*%B,mS[,26:50]%*%B,mS[,51:75]%*%B)
@@ -90,8 +89,6 @@ compute.affinities.local <- function(object,Array=1,NCprobe=NULL,verbose=TRUE,
   if(is.null(affinity.spline.coefs))
     affinity.spline.coefs <- compute.affinity.coef(object,Array,NCprobe,verbose=TRUE)
   if(verbose) cat("Computing affinities")
-  require(splines,quietly = TRUE)
-  require(matchprobes,quietly = TRUE)
   affinity.basis.matrix <- ns(1:25,df=nrow(as.matrix(affinity.spline.coefs))/3)
 
   cdfname <- cdfName(object)

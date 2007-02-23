@@ -1,7 +1,7 @@
 
 bg.adjust.optical <- function(abatch,minimum=1,verbose=TRUE){
   Index <- unlist(indexProbes(abatch,"both"))
-
+  Index <- Index[!is.na(Index)]
   if(verbose) cat("Adjusting for optical effect")
   for(i in 1:length(abatch)){
     if(verbose) cat(".")

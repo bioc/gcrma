@@ -57,7 +57,7 @@ just.gcrma <- function(..., filenames=character(0),
   auxnames <- as.list(substitute(list(...)))[-1]
   filenames <- .Primitive("c")(filenames, auxnames)
 
-  checkCelFiles(filenames)
+  checkValidFilenames(filenames)
   
   n <- length(filenames)
   

@@ -54,8 +54,8 @@ just.gcrma <- function(..., filenames=character(0),
                        verbose=TRUE, fast=TRUE, minimum=1, optimize.by = c("speed","memory"),
                        cdfname = NULL) {
 
-  auxnames <- as.list(substitute(list(...)))[-1]
-  filenames <- .Primitive("c")(filenames, auxnames)
+  auxnames <- unlist(list(...))
+  filenames <- c(filenames, auxnames)
 
   checkValidFilenames(filenames)
   

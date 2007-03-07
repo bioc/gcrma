@@ -72,7 +72,11 @@ just.gcrma <- function(..., filenames=character(0),
     
     samplenames <- gsub("^/?([^/]*/)*", "", unlist(filenames), extended=TRUE	)
     pdata <- data.frame(sample=1:n,row.names=samplenames)
-    phenoData <- new("phenoData",pData=pdata,varLabels=list(sample="arbitrary numbering"))
+    phenoData <- new("AnnotatedDataFrame",
+                     data = pdata,
+                     varMetadata = data.frame(
+                     labelDescription = "arbitrary numbering",
+                     row.names = "sample"))
   }
   else samplenames <- rownames(pdata)
   
@@ -154,8 +158,11 @@ just.gcrma <- function(..., filenames=character(0),
   
   annotation <- annotation(tmp)
   
-  new("exprSet", exprs = exprs, se.exprs = se.exprs, phenoData = phenoData, 
-      annotation = annotation, description = description, notes = notes)
+  new("ExpressionSet",
+      phenoData = phenoData,
+      annotation = annotation,
+      experimentData = description,
+      exprs = exprs, se.exprs = se.exprs)
 }
 
 ## A function to do background correction fast, but taking more RAM

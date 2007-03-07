@@ -13,7 +13,7 @@ justGCRMA <- function(..., filenames=character(0),
                      k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                      correction=1, rho=0.7, optical.correct=TRUE,
                      verbose=TRUE, fast=TRUE, minimum=1, optimize.by = c("speed","memory"),
-                      cdfname = NULL){
+                      cdfname = NULL, read.verbose = FALSE){
 
    l <- AllButCelsForReadAffy(..., filenames=filenames,
                              widget=widget,
@@ -127,14 +127,16 @@ just.gcrma <- function(..., filenames=character(0),
                     mm.affinities = mm.affinities, index.affinities = index.affinities,
                     type = type, minimum = minimum, optical.correct = optical.correct,
                     verbose = verbose, k = k, rho = rho, correction = correction,
-                    stretch = stretch, fast = fast, cdfname = cdfname)
+                    stretch = stretch, fast = fast, cdfname = cdfname,
+                    read.verbose = read.verbose)
   }
   if(speed == "memory"){
     pms <- mem.bkg(filenames = filenames, pm.affinities = pm.affinities,
                     mm.affinities = mm.affinities, index.affinities = index.affinities,
                     type = type, minimum = minimum, optical.correct = optical.correct,
                     verbose = verbose, k = k, rho = rho, correction = correction,
-                   stretch = stretch, fast = fast, cdfname = cdfname)
+                   stretch = stretch, fast = fast, cdfname = cdfname,
+                   read.verbose = read.verbose)
   }
 
  
@@ -169,10 +171,10 @@ just.gcrma <- function(..., filenames=character(0),
 
 fast.bkg <- function(filenames, pm.affinities, mm.affinities,
                      index.affinities, type, minimum, optical.correct,
-                     verbose, k, rho, correction, stretch, fast, cdfname){
+                     verbose, k, rho, correction, stretch, fast, cdfname, read.verbose){
   
   pms <- read.probematrix(filenames=filenames, which="pm", cdfname = cdfname,
-                          verbose = verbose)$pm
+                          verbose = read.verbose)$pm
   mms <- read.probematrix(filenames=filenames, which="mm", cdfname = cdfname)$mm
 
   if(optical.correct){
@@ -232,10 +234,10 @@ fast.bkg <- function(filenames, pm.affinities, mm.affinities,
 
 mem.bkg <- function(filenames, pm.affinities, mm.affinities,
                      index.affinities, type, minimum, optical.correct,
-                     verbose, k, rho, correction, stretch, fast, cdfname){
+                     verbose, k, rho, correction, stretch, fast, cdfname, read.verbose){
   
   pms <- read.probematrix(filenames=filenames, which="pm", cdfname = cdfname,
-                          verbose = verbose)$pm
+                          verbose = read.verbose)$pm
 
   ## tmps used to carry optical correct value to bkg correction loop
    if(optical.correct){

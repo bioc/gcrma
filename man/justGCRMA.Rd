@@ -3,7 +3,7 @@
 \alias{just.gcrma}
 \title{Compute GCRMA Directly from CEL Files}
 \description{
-  This function converts CEL files into an \code{exprSet}
+  This function converts CEL files into an \code{ExpressionSet}
   using the robust multi-array average (RMA) expression measure with help of probe sequences.
 }
 \usage{
@@ -16,7 +16,7 @@
                        k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                        correction=1, rho=0.7, optical.correct=TRUE,
                        verbose=TRUE, fast=TRUE, minimum=1, optimize.by = c("speed","memory"),
-                       cdfname = NULL)
+                       cdfname = NULL, read.verbose = FALSE)
 
             justGCRMA(..., filenames=character(0),
                      widget=getOption("BioC")$affy$use.widgets,
@@ -32,7 +32,7 @@
                      k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                      correction=1, rho=0.7, optical.correct=TRUE,
                      verbose=TRUE, fast=TRUE, minimum=1, optimize.by = c("speed","memory"),
-                     cdfname = NULL)
+                     cdfname = NULL, read.verbose = FALSE)
 }
 \arguments{
   \item{\dots}{ file names separated by comma.}
@@ -76,7 +76,10 @@
      \code{NULL}, the usual cdf package based on Affymetrix' mappings
      will be used. Note that the name should not include the 'cdf' on
      the end, and that the corresponding probe package is also required
-     to be installed. If either package is missing an error will result.}
+     to be installed. If either package is missing an error will
+     result.}
+   \item{read.verbose}{Logical value. If \code{TRUE} messages will be
+     printed as each celfile is read in.}
 }
 \details{
   This method should require much less RAM than the conventional
@@ -94,7 +97,7 @@
   \code{fast.bkg} and \code{mem.bkg} are two internal functions.
 }
 \value{
- An \code{exprSet}.
+ An \code{ExpressionSet}.
 }
 \author{James W. MacDonald}
 \examples{

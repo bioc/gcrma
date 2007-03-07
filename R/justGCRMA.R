@@ -171,7 +171,8 @@ fast.bkg <- function(filenames, pm.affinities, mm.affinities,
                      index.affinities, type, minimum, optical.correct,
                      verbose, k, rho, correction, stretch, fast, cdfname){
   
-  pms <- read.probematrix(filenames=filenames, which="pm", cdfname = cdfname)$pm
+  pms <- read.probematrix(filenames=filenames, which="pm", cdfname = cdfname,
+                          verbose = verbose)$pm
   mms <- read.probematrix(filenames=filenames, which="mm", cdfname = cdfname)$mm
 
   if(optical.correct){
@@ -233,7 +234,8 @@ mem.bkg <- function(filenames, pm.affinities, mm.affinities,
                      index.affinities, type, minimum, optical.correct,
                      verbose, k, rho, correction, stretch, fast, cdfname){
   
-  pms <- read.probematrix(filenames=filenames, which="pm", cdfname = cdfname)$pm
+  pms <- read.probematrix(filenames=filenames, which="pm", cdfname = cdfname,
+                          verbose = verbose)$pm
 
   ## tmps used to carry optical correct value to bkg correction loop
    if(optical.correct){

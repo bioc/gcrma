@@ -38,7 +38,8 @@ justGCRMA <- function(..., filenames=character(0),
                     optical.correct=optical.correct,
                     fast=fast, minimum=minimum,
                     optimize.by=optimize.by,
-                    cdfname = cdfname))
+                    cdfname = cdfname,
+                    read.verbose = read.verbose))
 
 }
 
@@ -52,7 +53,7 @@ just.gcrma <- function(..., filenames=character(0),
                        k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                        correction=1, rho=0.7, optical.correct=TRUE,
                        verbose=TRUE, fast=TRUE, minimum=1, optimize.by = c("speed","memory"),
-                       cdfname = NULL) {
+                       cdfname = NULL, read.verbose = FALSE) {
 
   auxnames <- unlist(list(...))
   filenames <- c(filenames, auxnames)

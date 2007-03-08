@@ -10,9 +10,10 @@
 \usage{
 fast.bkg(filenames, pm.affinities, mm.affinities, index.affinities,
 type, minimum, optical.correct, verbose, k, rho, correction, stretch,
-fast, cdfname)
+fast, cdfname, read.verbose)
 mem.bkg(filenames, pm.affinities, mm.affinities, index.affinities, type,
-minimum, optical.correct, verbose, k, rho, correction, stretch, fast, cdfname)
+minimum, optical.correct, verbose, k, rho, correction, stretch, fast,
+cdfname, read.verbose)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -40,6 +41,8 @@ minimum, optical.correct, verbose, k, rho, correction, stretch, fast, cdfname)
     will be used. Note that the name should not include the 'cdf' on
     the end, and that the corresponding probe package is also required
     to be installed. If either package is missing an error will result.}
+  \item{read.verbose}{Logical value. If \code{TRUE}, a message is
+    returned as each celfile is read in.}
 }
 \details{
   Note that this expression measure is given to you in log base 2

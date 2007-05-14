@@ -54,11 +54,11 @@ compute.affinities <- function(cdfname,verbose=TRUE){
   }
   
   ##put it in an affybatch
-  tmp <- get("xy2i",paste("package:",cdfpackagename,sep=""))
+  #tmp <- get("xy2i",paste("package:",cdfpackagename,sep=""))
   affinity.info <- new("AffyBatch",cdfName=cdfname)
   pmIndex <-  unlist(indexProbes(affinity.info,"pm"))
   mmIndex <-  unlist(indexProbes(affinity.info,"mm"))
-  subIndex <- match(tmp(p$x,p$y),pmIndex)
+  subIndex <- match(xy2indices(p$x,p$y, cdf=cdfpackagename),pmIndex)
   tmp.exprs=matrix(NA,nrow=max(cbind(pmIndex,mmIndex)),ncol=1)
   tmp.exprs[pmIndex[subIndex]]=apm
   if(!is.null(amm)){ tmp.exprs[mmIndex[subIndex]]=amm }

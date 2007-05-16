@@ -4,7 +4,7 @@ base.profiles.mm <- function(object,verbose=TRUE){
   cleancdf <- cleancdfname(cdfName(object),addcdf=FALSE)
   ##  object <- bg.adjust.optical(object) #should already been done
   cdfpackagename <- paste(cleancdf,"cdf",sep="")
-  myxy2i <- get("xy2i",paste("package:",cdfpackagename,sep=""))
+  #myxy2i <- get("xy2i",paste("package:",cdfpackagename,sep=""))
   probepackagename <- paste(cleancdf,"probe",sep="")
   getCDF(cdfpackagename)
   getProbePackage(probepackagename)
@@ -14,7 +14,7 @@ base.profiles.mm <- function(object,verbose=TRUE){
 
   pmIndex <-  unlist(indexProbes(object,"pm"))
   mmIndex <-  unlist(indexProbes(object,"mm"))
-  subIndex <- match(myxy2i(p$x,p$y),pmIndex)
+  subIndex <- match(xy2indices(p$x,p$y, cdf=cdfpackagename),pmIndex)
   bgy <- as.matrix(intensity(object)[mmIndex[subIndex],])
   affinity.spline.coefs <- base.profiles(bgy,seqs)
   affinity.spline.coefs
@@ -25,7 +25,7 @@ base.profiles.nc <- function(object, NCprobe,verbose=TRUE){
   cleancdf  <- cleancdfname(cdfName(object),addcdf=FALSE)
   ##object <- bg.adjust.optical(object)
   cdfpackagename <- paste(cleancdf,"cdf",sep="")
-  myxy2i <- get("xy2i",paste("package:",cdfpackagename,sep=""))
+  #myxy2i <- get("xy2i",paste("package:",cdfpackagename,sep=""))
   probepackagename <- paste(cleancdf,"probe",sep="")
   getCDF(cdfpackagename)
   getProbePackage(probepackagename)
@@ -35,13 +35,15 @@ base.profiles.nc <- function(object, NCprobe,verbose=TRUE){
 
   pmIndex <-  unlist(indexProbes(object,"pm"))
   mmIndex <-  unlist(indexProbes(object,"mm"))
-  subIndex1 <- match(NCprobe,c(myxy2i(p$x,p$y),myxy2i(p$x,p$y+1)))
+  subIndex1 <- match(NCprobe,c(xy2indices(p$x,p$y, cdf=cdfpackagename),
+                               xy2indices(p$x,p$y+1, cdf=cdfpackagename)))
   seqs <-c(PMseq,MMseq)[subIndex1[!is.na(subIndex1)]]
 
   bgy <- as.matrix(intensity(object)[NCprobe,])
   if(length(seqs)<length(NCprobe)){
     cat("\nNote: some of your negative control probes do not have sequence information\n")
-    subIndex2 <- match(c(myxy2i(p$x,p$y),myxy2i(p$x,p$y+1)),NCprobe)
+    subIndex2 <- match(c(xy2indices(p$x,p$y, cdf=cdfpackagename),
+                         xy2indices(p$x,p$y+1), cdf=cdfpackagename),NCprobe)
     subIndex2 <- subIndex2[!is.na(subIndex2)]
     bgy <- bgy[!is.na(subIndex1),]}
 
@@ -145,11 +147,11 @@ compute.affinities.local <- function(object,Array=1,NCprobe=NULL,verbose=TRUE,
     APM[,K]=apm;AMM[,K]=amm
   }
   ##put it in an affybatch
-  tmp <- get("xy2i",paste("package:",cdfpackagename,sep=""))
+  #tmp <- get("xy2i",paste("package:",cdfpackagename,sep=""))
   affinity.info <- new("AffyBatch",cdfName=cdfname)
   pmIndex <-  unlist(indexProbes(affinity.info,"pm"))
   mmIndex <-  unlist(indexProbes(affinity.info,"mm"))
-  subIndex <- match(tmp(p$x,p$y),pmIndex)
+  subIndex <- match(xy2indices(p$x,p$y, cdf=cdfpackagename),pmIndex)
   tmp.exprs=matrix(NA,nrow=max(cbind(pmIndex,mmIndex)),ncol=ncol(APM))
   tmp.exprs[pmIndex[subIndex],]=APM
   if(!is.null(amm)){ tmp.exprs[mmIndex[subIndex],]=AMM }

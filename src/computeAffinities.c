@@ -10,7 +10,7 @@ SEXP gcrma_getSeq(SEXP);
 
 SEXP gcrma_getSeq(SEXP psequence) {
     SEXP outMatrix;
-    char *pseq;
+    const char *pseq;
     int i;
 
     pseq = STR(psequence);

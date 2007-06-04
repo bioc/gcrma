@@ -9,9 +9,9 @@
 SEXP gcrma_getSeq2(SEXP,SEXP);
 SEXP gcrma_getSeq2(SEXP psequence, SEXP x) {
     SEXP outMatrix;
-    char *pseq;
+    const char *pseq;
     int k,i;
-    R_len_t nx,K;
+    R_len_t K;
     K=INTEGER(x)[0];
     pseq=STR(psequence);
 

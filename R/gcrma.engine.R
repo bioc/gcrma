@@ -33,20 +33,18 @@ gcrma.engine <- function(pms,mms,ncs=NULL,
                                      apm=pm.affinities,amm=mm.affinities,anc=anc,
                                      index.affinities,k=k,
                                      rho=rho,fast=fast)
-      if(GSB.adjust)
-        pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
-                                      fit1[2]*pm.affinities+mean(fit1[2]*pm.affinities))
-    }  
+      if(GSB.adjust) 
+        pms[,i] <- GSB.adj(Yin=pms[,i],subset=index.affinities,aff=pm.affinities,fit1=fit1,k=k)
+    }
     if(type=="affinities"){
       if(is.null(ncs))
         pms[,i] <-  bg.adjust.affinities(pms[,i],ncs=mms[,i],apm=pm.affinities,anc=mm.affinities,
                                          index.affinities,k=k,fast=fast)
       else
         pms[,i] <- bg.adjust.affinities(pms[,i],ncs=ncs[,i],apm=pm.affinities,anc=anc,
-                                        index.affinities,k=k,fast=fast)
+                                        index.affinities,k=k,fast=fast,nomm=TRUE)
       if(GSB.adjust)
-        pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
-                                      fit1[2]*pm.affinities+mean(fit1[2]*pm.affinities))
+        pms[,i] <- GSB.adj(Yin=pms[,i],subset=index.affinities,aff=pm.affinities,fit1=fit1,k=k)
     }
     if(type=="mm") pms[,i] <- bg.adjust.mm(pms[,i],correction*mms[,i],k=k,fast=fast)
     if(type=="constant"){
@@ -61,3 +59,10 @@ gcrma.engine <- function(pms,mms,ncs=NULL,
   if(verbose) cat("Done.\n")
   return(pms)
 }
+
+
+GSB.adj <- function(Yin,subset,aff,fit1,k=k){ #subset are the index of Yin with the affinities aff
+    y0=Yin[subset]
+    y0.adj=k+ 2^(fit1[2]*(aff-mean(aff)))*(y0-k)
+    Yin[subset]=y0.adj
+     }

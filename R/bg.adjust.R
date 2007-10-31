@@ -50,9 +50,9 @@ bg.adjust.fullmodel<- function(pms,mms,ncs=NULL,apm,amm,anc=NULL,index.affinitie
 }
 
 ##########################################################################################
-bg.adjust.affinities<- function(pms,ncs,apm,anc,index.affinities,k=k,fast=FALSE){
-
-  parameters <- bg.parameters.ns(ncs[index.affinities],anc,apm)
+bg.adjust.affinities<- function(pms,ncs,apm,anc,index.affinities,k=k,fast=FALSE,nomm=FALSE){
+  if(!nomm) parameters <- bg.parameters.ns(ncs[index.affinities],anc,apm)
+  else parameters <- bg.parameters.ns(ncs,anc,apm)
   mu.pm <- vector("numeric",length(pms))
   mu.pm[index.affinities] <- parameters$bg.mu2
   sigma<- parameters$bg.sigma

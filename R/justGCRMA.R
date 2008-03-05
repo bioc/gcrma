@@ -45,7 +45,7 @@ justGCRMA <- function(..., filenames=character(0),
 
 
 just.gcrma <- function(..., filenames=character(0),
-                       phenoData=new("phenoData"),
+                       phenoData=new("AnnotatedDataFrame"),
                        description=NULL,
                        notes="", compress=getOption("BioC")$affy$compress.cel,
                        normalize=TRUE, bgversion=2, affinity.info=NULL,

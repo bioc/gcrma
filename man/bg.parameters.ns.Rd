@@ -22,6 +22,7 @@ bg.parameters.ns(x, affinities, affinities2 = NULL, affinities3 = NULL, span = 0
    Probe affinities for another extra group of probes whose expected non-specific binding
    intensity is to be predicted.
   }
+  \item{span}{}
 }
 %\details{}
 \value{a vector of same length as x.}

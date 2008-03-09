@@ -53,7 +53,7 @@ bg.parameters.ns=function (x, affinities,affinities2=NULL,affinities3=NULL,span=
   
 bg.parameters.ns2 <- function (x, affinities,affinities2=NULL,affinities3=NULL,span=.2)
 {   
-  set.seed(1989)
+#  set.seed(1989)
   O=order(affinities)
   x1<-runmed(x[O],21)
   a1 <- affinities[O]

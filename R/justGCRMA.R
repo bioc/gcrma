@@ -154,7 +154,8 @@ just.gcrma <- function(..., filenames=character(0),
   
   bg.dens <- function(x){density(x,kernel="epanechnikov",n=2^14)}
   
-  exprs <- .Call("rma_c_complete",pms,pms,probenames,ngenes,body(bg.dens),new.env(),normalize,background=FALSE,bgversion,PACKAGE="affy")
+  exprs <- .Call("rma_c_complete",pms,probenames,ngenes,body(bg.dens),
+                 new.env(),normalize,background=FALSE,bgversion,verbose,PACKAGE="affy")
 
   colnames(exprs) <- samplenames
   se.exprs <- array(NA, dim(exprs))

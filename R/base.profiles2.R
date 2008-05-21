@@ -43,7 +43,7 @@ base.profiles.nc <- function(object, NCprobe,verbose=TRUE){
   if(length(seqs)<length(NCprobe)){
     cat("\nNote: some of your negative control probes do not have sequence information\n")
     subIndex2 <- match(c(xy2indices(p$x,p$y, cdf=cdfpackagename),
-                         xy2indices(p$x,p$y+1), cdf=cdfpackagename),NCprobe)
+                         xy2indices(p$x,p$y+1, cdf=cdfpackagename)),NCprobe)
     subIndex2 <- subIndex2[!is.na(subIndex2)]
     bgy <- bgy[!is.na(subIndex1),]}
 

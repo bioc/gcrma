@@ -2,6 +2,7 @@
 \alias{gcrma}
 \alias{gcrma.bg.transformation.fast}
 \alias{gcrma.bg.transformation}
+\alias{GSB.adj}
 \title{Robust Multi-Array expression measure using sequence information}
 \description{
   This function converts an \code{AffyBatch} into an \code{ExpressionSet}

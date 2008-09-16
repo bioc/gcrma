@@ -63,6 +63,7 @@ gcrma.engine <- function(pms,mms,ncs=NULL,
 
 GSB.adj <- function(Yin,subset,aff,fit1,k=k){ #subset are the index of Yin with the affinities aff
     y0=Yin[subset]
-    y0.adj=k+ 2^(fit1[2]*(aff-mean(aff)))*(y0-k)
+    y0.adj=k+ 2^(-fit1[2]*(aff-mean(aff)))*(y0-k)
     Yin[subset]=y0.adj
+    Yin
      }

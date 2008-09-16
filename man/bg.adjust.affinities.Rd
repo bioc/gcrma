@@ -32,7 +32,6 @@ bg.adjust.affinities(pms,ncs,apm,anc,index.affinities,k=k,fast=FALSE,nomm=FALSE)
 %  \item{Q}{A number between 0 and 1 that determines what quantile to use
 %  as an estimate of the mean background noise.}
   \item{fast}{Logical value. If \code{TRUE} a faster add-hoc algorithm is used.}
-  \item{nomm}{}
   \item{nomm}{Logical value indicating if MM intensities are available
     and will to be used to estimate background.}
 }

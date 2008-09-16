@@ -1,5 +1,6 @@
 \name{compute.affinities}
 \alias{compute.affinities}
+\alias{compute.affinities2}
 \alias{check.probes}
 \alias{base.profiles}
 \alias{base.profiles.mm}
@@ -14,7 +15,7 @@ An internal function to calculate probe affinities from their
 sequences.}
 \usage{
 compute.affinities(cdfname,verbose=TRUE)
-
+compute.affinities2(cdfname,verbose=TRUE)
 check.probes(probepackage,cdfname)
 }
 \arguments{
@@ -31,6 +32,8 @@ The affinity of a probe is described as the sum of position-dependent base affin
 Each base at each position contributes to the total affinity of a probe
 in an additive fashion. For a given type of base, the positional effect
 is modeled as a spline function with 5 degrees of freedom.
+
+Use \code{compute.affinities2} if there are no MM probes.
 
 \code{check.probes} makes sure things are matching as they should.
 }

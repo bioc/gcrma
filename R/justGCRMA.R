@@ -144,18 +144,15 @@ just.gcrma <- function(..., filenames=character(0),
   tmp <- new("AffyBatch",
              cdfName=cdfName,
              annotation=cleancdfname(cdfName, addcdf=FALSE))
-  pmIndex <- pmindex(tmp)
-  probenames <- rep(names(pmIndex), unlist(lapply(pmIndex,length)))
-  pmIndex <- unlist(pmIndex)
-
+  
   ngenes <- length(geneNames(tmp))
+
+  pNList <- probeNames(tmp)
+  pNList <- split(0:(length(pNList) -1), pNList)
+
+
   
-  ##background correction - not used, but need to pass to .Call
-  
-  bg.dens <- function(x){density(x,kernel="epanechnikov",n=2^14)}
-  
-  exprs <- .Call("rma_c_complete",pms,probenames,ngenes,body(bg.dens),
-                 new.env(),normalize,background=FALSE,bgversion,verbose,PACKAGE="affy")
+  exprs <- .Call("rma_c_complete",pms, pNList, ngenes, normalize, FALSE, bgversion, verbose, PACKAGE="affy")
 
   colnames(exprs) <- samplenames
   se.exprs <- array(NA, dim(exprs))

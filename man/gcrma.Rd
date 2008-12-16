@@ -36,7 +36,7 @@ gcrma(object,affinity.info=NULL,
     sequence information only. "mm" for using MM without sequence
     information.}
   \item{k}{A tuning factor.}
-  \item{stretch} {.}
+  \item{stretch}{.}
   \item{correction}{.}
   \item{GSB.adjust}{Logical value. If \code{TRUE}, probe effects in specific binding will
     be adjusted.}

@@ -1,6 +1,6 @@
 Package: gcrma
 Title: Background Adjustment Using Sequence Information
-Version: 2.15.1
+Version: 2.15.2
 Author: Jean(ZHIJIN) Wu, Rafael Irizarry
 	with contributions from
 	James MacDonald <jmacdon@med.umich.edu>	
@@ -8,6 +8,7 @@ Author: Jean(ZHIJIN) Wu, Rafael Irizarry
 Description:  Background adjustment using sequence information
 Maintainer: Z. Wu <zwu@stat.brown.edu>
 License: LGPL
-Depends: R (>= 2.6.0), Biobase, affy (>= 1.5.0), matchprobes, splines
+Depends: R (>= 2.6.0), Biobase, affy (>= 1.5.0), matchprobes
+Imports: splines
 Suggests: affydata
 biocViews: Microarray, OneChannel, Preprocessing

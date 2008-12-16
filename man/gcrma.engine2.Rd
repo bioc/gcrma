@@ -22,7 +22,7 @@ gcrma.engine2(object,pmIndex=NULL,mmIndex=NULL,
     function if left \code{NULL}}
   \item{mmIndex}{Index of MM probes.This will be computed within the
     function if left \code{NULL}}
-  \item{NCprobe} {Index of negative control probes. When set as
+  \item{NCprobe}{Index of negative control probes. When set as
     \code{NULL},the MM probes will be used. These probes
     are used to estimate parameters of non-specific binding on each
     array. These will be also used to estimate probe affinity profiles when
@@ -34,7 +34,7 @@ gcrma.engine2(object,pmIndex=NULL,mmIndex=NULL,
     sequence information only. "mm" for using MM without sequence
     information.}
   \item{k}{A tuning factor.}
-  \item{stretch} {.}
+  \item{stretch}{.}
   \item{correction}{.}
   \item{GSB.adjust}{Logical value. If \code{TRUE}, probe effects in specific binding will
     be adjusted.}

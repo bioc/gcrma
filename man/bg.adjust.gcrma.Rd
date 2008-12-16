@@ -25,7 +25,7 @@ bg.adjust.gcrma(object,affinity.info=NULL,
     Non-specific binding data or \code{local}: use the experimental
     data in \code{object}. If \code{local} is chosen, either MM probes or a user-defined
     list of probes (see \code{NCprobes}) are used to estimate affinities.}
-  \item{NCprobe} {Index of negative control probes. When set as
+  \item{NCprobe}{Index of negative control probes. When set as
     \code{NULL},the MM probes will be used. These probes
     are used to estimate parameters of non-specific binding on each
     array. These will be also used to estimate probe affinity profiles when

@@ -3,7 +3,7 @@ getCDF <- function(cdfname, lib=.libPaths()[1], verbose=TRUE){
   ## 1-23-2006 JWM: removed dependency on reposTools
   
   options(show.error.messages = FALSE)
-  attempt <- try(do.call("library", list(cdfname, lib.loc = lib)))
+  attempt <- try(do.call(library, list(cdfname, lib.loc = lib)))
   options(show.error.messages = TRUE)
   if (inherits(attempt, "try-error")){
     
@@ -41,7 +41,7 @@ getCDF <- function(cdfname, lib=.libPaths()[1], verbose=TRUE){
     }
   }
   ## Now load the library
-  do.call("library", list(cdfname, lib.loc=lib))
+  do.call(library, list(cdfname, lib.loc=lib))
   ##Check that library is loaded
   if(!cdfname %in% .packages()) stop(paste("The package", cdfname,
                                            "could not be loaded."))
@@ -52,7 +52,7 @@ getProbePackage <- function(probepackage, lib=.libPaths()[1], verbose=TRUE){
 
   ## 1-23-2006 JWM: Removed dependency on reposTools
   options(show.error.messages = FALSE)
-  attempt <- try(do.call("library", list(probepackage, lib.loc = lib)))
+  attempt <- try(do.call(library, list(probepackage, lib.loc = lib)))
   options(show.error.messages = TRUE)
   if (inherits(attempt, "try-error")){
     
@@ -91,7 +91,7 @@ getProbePackage <- function(probepackage, lib=.libPaths()[1], verbose=TRUE){
   }
   
   ## Now load the library
-  do.call("library", list(probepackage, lib.loc=lib))
+  do.call(library, list(probepackage, lib.loc=lib))
   ##Check that library is loaded
   if(!probepackage %in% .packages()) stop(paste("The package", probepackage,
                                                 "could not be loaded."))

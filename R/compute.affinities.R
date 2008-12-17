@@ -1,6 +1,6 @@
 compute.affinities <- function(cdfname,verbose=TRUE){
   if(verbose) cat("Computing affinities")   
-  data(affinity.spline.coefs) ###needs to change to data(something)
+  data(affinity.spline.coefs, package = "gcrma") ###needs to change to data(something)
   affinity.basis.matrix <- ns(1:25,df=length(affinity.spline.coefs)/3)
   
   cleancdf <- cleancdfname(cdfname,addcdf=FALSE)

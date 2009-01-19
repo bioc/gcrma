@@ -50,7 +50,7 @@ gcrma.engine2 <- function(object,pmIndex=NULL,mmIndex=NULL,
                                        rho=rho,fast=fast)
     
       if(GSB.adjust)
-        pms[,i] <- GSB.adj(Yin=pms[,i],subset=index.affinities,aff=pm.affinities,fit1=fit1,k=k)
+        pms[,i] <- GSB.adj(Yin=pms[,i],subset=index.affinities,aff=pm.affinities[,i],fit1=fit1,k=k)
 
     }  
     ##affinities

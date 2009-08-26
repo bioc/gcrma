@@ -1,7 +1,7 @@
 % -*- mode: noweb; noweb-default-code-mode: R-mode; -*-
 %\VignetteIndexEntry{gcrma1.2}
 %\VignetteKeywords{Preprocessing, Affymetrix}
-%\VignetteDepends{affy,matchprobes,tools,splines}
+%\VignetteDepends{affy,Biostrings,tools,splines}
 %\VignettePackage{gcrma}
 %documentclass[12pt, a4paper]{article}
 \documentclass[12pt]{article}

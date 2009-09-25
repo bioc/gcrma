@@ -15,7 +15,8 @@
                        type=c("fullmodel","affinities","mm","constant"),
                        k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                        correction=1, rho=0.7, optical.correct=TRUE,
-                       verbose=TRUE, fast=TRUE, minimum=1, optimize.by = c("speed","memory"),
+                       verbose=TRUE, fast=TRUE, minimum=1, optimize.by =
+                       c("speed","memory"), 
                        cdfname = NULL, read.verbose = FALSE)
 
             justGCRMA(\dots, filenames=character(0),
@@ -31,7 +32,8 @@
                      type=c("fullmodel","affinities","mm","constant"),
                      k=6*fast+0.5*(1-fast), stretch=1.15*fast+1*(1-fast),
                      correction=1, rho=0.7, optical.correct=TRUE,
-                     verbose=TRUE, fast=TRUE, minimum=1, optimize.by = c("speed","memory"),
+                     verbose=TRUE, fast=TRUE, minimum=1,
+                     optimize.by = c("speed","memory"),
                      cdfname = NULL, read.verbose = FALSE)
 }
 \arguments{
@@ -39,8 +41,8 @@
   \item{filenames}{file names in a character vector.}
   \item{widget}{a logical specifying if widgets should be used.}
   \item{compress}{are the CEL files compressed?}
-  \item{phenoData}{a \code{\link[Biobase]{AnnotatedDataFrame}} object.}
-  \item{description}{a \code{\link[Biobase]{MIAME}} object.}
+  \item{phenoData}{a \code{\link[Biobase:class.AnnotatedDataFrame]{AnnotatedDataFrame}} object.}
+  \item{description}{a \code{\link[Biobase:class.MIAME]{MIAME}} object.}
   \item{notes}{notes.}
   \item{affinity.info}{\code{NULL} or a list of three components:
     apm,amm and index, for PM probe affinities, MM probe affinities,
@@ -96,7 +98,7 @@
   \code{fast.bkg} and \code{mem.bkg} are two internal functions.
 }
 \value{
- An \code{ExpressionSet}.
+ An \code{\link[Biobase:class.ExpressionSet]{ExpressionSet}} object.
 }
 \author{James W. MacDonald}
 \examples{

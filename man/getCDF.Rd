@@ -21,11 +21,15 @@ getProbePackage(probepackage, lib = .libPaths()[1], verbose = TRUE)
 }
 
 \value{
-  Nothing is returned. These functions are called simply to install environments.
+  Nothing is returned. These functions are called simply to install
+  environments. 
 }
 \author{ James W. MacDonald, based on \code{getCDFinfo}, written by Jeff
 Gentry.}
 
-\seealso{ ~~objects to See Also as \code{\link[affy]{getCDFinfo}}}
+\seealso{ \code{getCDFinfo} 
+  %\code{\link[affy]{getCDFinfo}} there is no such function in affy
+  %called getCDFinfo 
+}
 
 \keyword{ internal }

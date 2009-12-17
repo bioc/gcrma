@@ -205,16 +205,19 @@ fast.bkg <- function(filenames, pm.affinities, mm.affinities,
                                      pm.affinities,mm.affinities,anc=NULL,
                                      index.affinities,k=k,
                                      rho=rho,fast=fast)
-      pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
-                                    fit1$coef[2]*pm.affinities+mean(fit1$coef[2]*pm.affinities))
+      pms[,i] <- GSB.adj(pms[,i], index.affinities, pm.affinities, fit1$coef, k)
+   #   pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
+    #                                fit1$coef[2]*pm.affinities+mean(fit1$coef[2]*pm.affinities))
     }
     if(type=="affinities"){
       pms[,i] <- bg.adjust.affinities(pms[,i],ncs=mms[,i],pm.affinities,mm.affinities,
                                       index.affinities, k=k,
                                       fast=fast)
-      pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
-                                    fit1$coef[2]*pm.affinities + 
-                                    mean(fit1$coef[2]*pm.affinities))
+      pms[,i] <- GSB.adj(pms[,i], index.affinities, pm.affinities, fit1$coef, k)
+      
+      ## pms[index.affinities,i] <- 2^(log2(pms[index.affinities,i])-
+##                                     fit1$coef[2]*pm.affinities + 
+##                                    mean(fit1$coef[2]*pm.affinities))
     }
     if(type=="mm") pms[,i] <- bg.adjust.mm(pms[,i],correction*mms[,i],k=k,fast=fast)
     if(type=="constant"){

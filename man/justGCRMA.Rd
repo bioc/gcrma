@@ -86,6 +86,11 @@
   This method should require much less RAM than the conventional
   method of first creating an \code{AffyBatch} and then running
   \code{\link[gcrma]{gcrma}}.
+
+  This is a simpler version than \code{gcrma}, so some of the arguments
+  available in \code{gcrma} are not available here. For example, it is
+  not possible to use the MM probes to estimate background. Instead, the
+  internal NSB estimates are used (which is also the default for \code{gcrma}).
   
   Note that this expression measure is given to you in log base 2
   scale. This differs from most of the other expression measure

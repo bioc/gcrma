@@ -15,7 +15,7 @@ bg.adjust.optical <- function(abatch,minimum=1,verbose=TRUE){
 
 
 ##########################################################################################
-bg.adjust.fullmodel<- function(pms,mms,ncs=NULL,apm,amm,anc=NULL,index.affinities,k=k,rho=.7,fast=FALSE){
+bg.adjust.fullmodel<- function(pms,mms,ncs=NULL,apm,amm,anc=NULL,index.affinities,k=6*fast+0.25*(1-fast),rho=.7,fast=FALSE){
   if(is.null(ncs)){
     parameters <- bg.parameters.ns(mms[index.affinities],amm,apm)
     mu.pm <- vector("numeric",length(pms))
@@ -50,7 +50,7 @@ bg.adjust.fullmodel<- function(pms,mms,ncs=NULL,apm,amm,anc=NULL,index.affinitie
 }
 
 ##########################################################################################
-bg.adjust.affinities<- function(pms,ncs,apm,anc,index.affinities,k=k,fast=FALSE,nomm=FALSE){
+bg.adjust.affinities<- function(pms,ncs,apm,anc,index.affinities,k=6*fast+0.25*(1-fast),fast=FALSE,nomm=FALSE){
   if(!nomm) parameters <- bg.parameters.ns(ncs[index.affinities],anc,apm)
   else parameters <- bg.parameters.ns(ncs,anc,apm)
   mu.pm <- vector("numeric",length(pms))

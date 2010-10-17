@@ -56,8 +56,5 @@ ignored if MMs are used as negative controls (\code{ncs=NULL})}
 }
 \seealso{gcrma.engine2}
 \author{Rafeal Irizarry & Zhijin Wu}
-\examples{
-
-}
 \keyword{manip}
 

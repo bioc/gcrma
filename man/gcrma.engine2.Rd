@@ -59,7 +59,5 @@ gcrma.engine2(object,pmIndex=NULL,mmIndex=NULL,
 }
 \seealso{gcrma.engine}
 \author{Rafeal Irizarry & Zhijin Wu}
-\examples{
-}
 \keyword{manip}
 

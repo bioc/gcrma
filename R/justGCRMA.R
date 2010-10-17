@@ -71,7 +71,7 @@ just.gcrma <- function(..., filenames=character(0),
   if(dim(pdata)[1]!=n){#if empty pdata filename are samplenames
     #warning("Incompatible phenoData object. Created a new one.\n")
     
-    samplenames <- gsub("^/?([^/]*/)*", "", unlist(filenames), extended=TRUE	)
+    samplenames <- gsub("^/?([^/]*/)*", "", unlist(filenames))
     pdata <- data.frame(sample=1:n,row.names=samplenames)
     phenoData <- new("AnnotatedDataFrame",
                      data = pdata,

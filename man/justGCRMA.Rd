@@ -106,7 +106,4 @@
  An \code{\link[Biobase:class.ExpressionSet]{ExpressionSet}} object.
 }
 \author{James W. MacDonald}
-\examples{
-
-}
 \keyword{manip}

@@ -9,8 +9,10 @@
 An internal function to be used by \code{\link{gcrma}}.
 }
 \usage{
-bg.adjust.fullmodel(pms,mms,ncs=NULL,apm,amm,anc=NULL,index.affinities,k=k,rho=.7,fast)
-bg.adjust.affinities(pms,ncs,apm,anc,index.affinities,k=k,fast=FALSE,nomm=FALSE)
+bg.adjust.fullmodel(pms,mms,ncs=NULL,apm,amm,anc=NULL,index.affinities,k=6
+* fast + 0.25 * (1 - fast),rho=.7,fast=FALSE)
+bg.adjust.affinities(pms,ncs,apm,anc,index.affinities,k=6
+* fast + 0.25 * (1 - fast),fast=FALSE,nomm=FALSE)
 }
 \arguments{
   \item{pms}{PM intensities after optical background correction, before

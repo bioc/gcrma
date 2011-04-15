@@ -247,7 +247,8 @@ mem.bkg <- function(filenames, pm.affinities, mm.affinities,
      tmps <- NULL
      for (i in 1:ncol(pms)){
        if(verbose) cat(".")
-       mm <- read.probematrix(filenames=filenames[i], which="mm")$mm[,1]
+       mm <- read.probematrix(filenames=filenames[i], which="mm",
+                              cdfname = cdfname)$mm[,1]
        tmp <-  min(c(pms[,i], mm), na.rm=TRUE)
        pms[,i] <- pms[,i]- tmp + minimum
        tmps <- c(tmps, tmp)
@@ -269,7 +270,8 @@ mem.bkg <- function(filenames, pm.affinities, mm.affinities,
   for(i in 1:ncol(pms)){
     if(verbose) cat(".")
 
-    mm <- read.probematrix(filenames=filenames[i], which="mm")$mm[,1]
+    mm <- read.probematrix(filenames=filenames[i], which="mm",
+                           cdfname = cdfname)$mm[,1]
     
     if(optical.correct)
       mm <- mm - tmps[i] + minimum

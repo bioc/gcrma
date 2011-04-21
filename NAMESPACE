@@ -12,7 +12,10 @@ importFrom(affyio, read.celfile.header)
 
 importFrom(Biobase, testBioCConnection)
 
-importFrom(Biostrings, complementSeq)
+importFrom(IRanges, subseq, "subseq<-")
+importClassesFrom(Biostrings, "XStringSet", "DNAStringSet")
+importFrom(Biostrings, DNAStringSet, complement)
+importMethodsFrom(Biostrings, subseq, "subseq<-", as.character)
 
 importFrom(graphics, matplot)
 

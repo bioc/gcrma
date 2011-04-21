@@ -1,3 +1,12 @@
+complementSeq <- function(seq,start=1,stop=0){
+  if (is.numeric(stop) && length(stop) == 1L && !is.na(stop) && stop == 0)
+    stop <- -1
+  seq <- DNAStringSet(seq)
+  subseq(seq, start=start, end=stop) <-
+    complement(subseq(seq, start=start, end=stop))
+  as.character(seq)
+}
+
 # compute affinity.spline.coefs from MMs
 base.profiles.mm <- function(object,verbose=TRUE){
   

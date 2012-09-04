@@ -145,7 +145,7 @@ just.gcrma <- function(..., filenames=character(0),
              cdfName=cdfName,
              annotation=cleancdfname(cdfName, addcdf=FALSE))
   
-  ngenes <- length(geneNames(tmp))
+  ngenes <- length(featureNames(tmp))
 
   pNList <- probeNames(tmp)
   pNList <- split(0:(length(pNList) -1), pNList)

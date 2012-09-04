@@ -3,7 +3,7 @@ useDynLib(gcrma)
 importMethodsFrom(affy, cdfName, indexProbes, intensity, mm, pm,
                   "pm<-", pmindex, probeNames)
 
-importMethodsFrom(Biobase, exprs, "exprs<-", geneNames, pData)
+importMethodsFrom(Biobase, exprs, "exprs<-", featureNames, pData)
 
 importFrom(affy, AllButCelsForReadAffy, checkValidFilenames,
            cleancdfname, read.probematrix, rma, xy2indices)
@@ -11,6 +11,8 @@ importFrom(affy, AllButCelsForReadAffy, checkValidFilenames,
 importFrom(affyio, read.celfile.header)
 
 importFrom(Biobase, testBioCConnection)
+
+importFrom(BiocInstaller, biocinstallRepos)
 
 importFrom(IRanges, subseq, "subseq<-")
 importClassesFrom(Biostrings, "DNAStringSet")

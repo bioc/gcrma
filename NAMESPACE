@@ -21,7 +21,7 @@ importMethodsFrom(Biostrings, "subseq<-", as.character)
 
 importFrom(graphics, matplot)
 
-importFrom(methods, "@<-", new)
+importFrom(methods, new)
 
 importFrom(splines, ns)
 

@@ -14,7 +14,7 @@ importFrom(Biobase, testBioCConnection)
 
 importFrom(BiocInstaller, biocinstallRepos)
 
-importFrom(IRanges, subseq, "subseq<-")
+importFrom(XVector, subseq, "subseq<-")
 importClassesFrom(Biostrings, "DNAStringSet")
 importFrom(Biostrings, DNAStringSet, complement)
 importMethodsFrom(Biostrings, "subseq<-", as.character)

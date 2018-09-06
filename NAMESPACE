@@ -12,7 +12,7 @@ importFrom(affyio, read.celfile.header)
 
 importFrom(Biobase, testBioCConnection)
 
-importFrom(BiocInstaller, biocinstallRepos)
+importFrom(BiocManager, repositories)
 
 importFrom(XVector, subseq, "subseq<-")
 importClassesFrom(Biostrings, "DNAStringSet")

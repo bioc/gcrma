@@ -19,7 +19,7 @@ getCDF <- function(cdfname, lib=.libPaths()[1], verbose=TRUE){
                             "\nPlease check your permissions or provide",
                             "a different 'lib' parameter."))
       
-      biocContribUrl <- sapply(biocinstallRepos(), contrib.url)
+      biocContribUrl <- sapply(repositories(), contrib.url)
       biocPkgs <- available.packages(biocContribUrl)
       if(!cdfname %in% biocPkgs[,"Package"]){
         if(verbose)
@@ -29,7 +29,7 @@ getCDF <- function(cdfname, lib=.libPaths()[1], verbose=TRUE){
         return(list(paste("Bioconductor -",cdfname,"not available")))
       }else{
         install.packages(cdfname, lib=lib,
-                         repos=biocinstallRepos(),
+                         repos=repositories(),
                          dependencies=TRUE)
       }
     }else{
@@ -68,7 +68,7 @@ getProbePackage <- function(probepackage, lib=.libPaths()[1], verbose=TRUE){
                             "\nPlease check your permissions or provide",
                             "a different 'lib' parameter."))
       
-      biocContribUrl <- sapply(biocinstallRepos(), contrib.url)
+      biocContribUrl <- sapply(repositories(), contrib.url)
       biocPkgs <- available.packages(biocContribUrl)
       if(!probepackage %in% biocPkgs[,"Package"]){
         if(verbose)
@@ -78,7 +78,7 @@ getProbePackage <- function(probepackage, lib=.libPaths()[1], verbose=TRUE){
         return(list(paste("Bioconductor -",probepackage,"not available")))
       }else{
         install.packages(probepackage, lib=lib,
-                         repos=biocinstallRepos(),
+                         repos=repositories(),
                          dependencies=TRUE)
       }
     }else{
